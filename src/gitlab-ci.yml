@@ -1,0 +1,102 @@
+variables:
+  COMPOSER_CACHE_DIR: /composer-cache
+  NODE_ENV: production
+
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+    - /composer-cache
+
+stages:
+  - deploy
+  - sync
+
+deploy:
+  stage: deploy
+  tags:
+      - php
+  only:
+      - master
+      - production
+  environment: $CI_BUILD_REF_NAME
+  before_script:
+    - apt-get update -qq && apt-get -qq -o dir::cache::archives="apt-cache" install -y nodejs npm php5 php5-cli php5-curl php5-gd ruby rsync
+    - ln -s /usr/bin/nodejs /usr/bin/node
+    - gem install sass
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    # ssh:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  script:
+    - echo "Building..."
+    - BRANCH=$CI_BUILD_REF_NAME
+    - composer install --no-dev
+    - cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration typo3conf/AdditionalConfiguration.php
+    - if [ -f '.htaccess.'$BRANCH ]; then cp '.htaccess.'$BRANCH .htaccess ; fi
+
+    - echo "Deploying application..."
+
+    - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
+    - SSH_HOST="${!SSH_HOST_VARIABLE}"
+    - if [ -z "$SSH_HOST" ]; then echo $BRANCH' is not deployed because there is no variable '$SSH_HOST_VARIABLE' configured.' && exit 0; fi
+
+    - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
+    - SSH_REMOTE_PATH="${!SSH_REMOTE_PATH_VARIABLE}"
+    - SSH_REMOTE_PRIVATE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PRIVATE_PATH'
+    - SSH_REMOTE_PRIVATE_PATH="${!SSH_REMOTE_PRIVATE_PATH_VARIABLE}"
+
+    - echo $'ENVNAME=\''$BRANCH$'\'' >> environmentConfiguration.txt
+    - echo $'GIT_REFERENCE=\''$CI_BUILD_REF$'\'' >> environmentConfiguration.txt
+    - DBNAME_VARIABLE=$BRANCH'_DBNAME'
+    - echo $'DBNAME=\''"${!DBNAME_VARIABLE}"$'\'' >> environmentConfiguration.txt
+    - DBUSER_VARIABLE=$BRANCH'_DBUSER'
+    - echo $'DBUSER=\''"${!DBUSER_VARIABLE}"$'\'' >> environmentConfiguration.txt
+    - DBPASS_VARIABLE=$BRANCH'_DBPASS'
+    - echo $'DBPASS=\''"${!DBPASS_VARIABLE}"$'\'' >> environmentConfiguration.txt
+    - DBHOST_VARIABLE=$BRANCH'_DBHOST'
+    - echo $'DBHOST=\''"${!DBHOST_VARIABLE}"$'\'' >> environmentConfiguration.txt
+    - cat environmentConfiguration.txt
+    - rsync -az -e "ssh" environmentConfiguration.txt $SSH_HOST:$SSH_REMOTE_PRIVATE_PATH/environmentConfiguration.txt
+    - rm environmentConfiguration.txt
+
+    - rsync -az -e "ssh" --delete --exclude=fileadmin --exclude=download --exclude=typo3conf/l10n --exclude=.git --exclude=node_modules --exclude=bower_components --exclude=typo3temp --exclude=.sass-cache --exclude=/uploads ./ $SSH_HOST:$SSH_REMOTE_PATH
+
+    - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
+    - PHP_BINARY="${!PHP_BINARY_VARIABLE}"
+    - TYPO3_CONSOLE='bin/typo3cms'
+    - ssh $SSH_HOST 'cd '$SSH_REMOTE_PATH' && '$TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PRIVATE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f index.php || true) && cp typo3_src/index.php .'
+
+sync:
+  stage: sync
+  before_script:
+    - apt-get update -qq && apt-get -qq -o dir::cache::archives="apt-cache" install -y rsync
+    # ssh:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  only:
+    - master
+  script:
+    - BRANCH=$CI_BUILD_REF_NAME
+    - echo "Syncing fileadmin..."
+    - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
+    - SSH_REMOTE_PATH="${!SSH_REMOTE_PATH_VARIABLE}"
+    - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
+    - SSH_HOST="${!SSH_HOST_VARIABLE}"
+    - FILEADMIN_SYNC_SOURCE_VARIABLE=$BRANCH'_FILEADMIN_SYNC_SOURCE'
+    - FILEADMIN_SYNC_SOURCE="${!FILEADMIN_SYNC_SOURCE_VARIABLE}"
+    - FILEADMIN_SYNC_SOURCE_HOST_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_HOST'
+    - FILEADMIN_SYNC_SOURCE_HOST="${!FILEADMIN_SYNC_SOURCE_HOST_VARIABLE}"
+    - FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_REMOTE_PATH'
+    - FILEADMIN_SYNC_SOURCE_REMOTE_PATH="${!FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE}"
+    - echo 'Sync from host '$FILEADMIN_SYNC_SOURCE_HOST':'$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin to '$SSH_HOST':'$SSH_REMOTE_PATH'fileadmin'
+    - ssh $FILEADMIN_SYNC_SOURCE_HOST 'cd '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH' && tar --exclude=fileadmin/_processed_ -zcf fileadmin.tgz fileadmin'
+    - scp $FILEADMIN_SYNC_SOURCE_HOST:$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz' .
+    - tar -zxf fileadmin.tgz
+    - ssh $FILEADMIN_SYNC_SOURCE_HOST 'rm -f '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz'
+    - rsync -az -e "ssh" --delete --exclude=_processed_ fileadmin $SSH_HOST:$SSH_REMOTE_PATH
