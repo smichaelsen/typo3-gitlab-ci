@@ -13,4 +13,4 @@ Include the following scripts in your root composer.json:
         "post-update-cmd": [
             "cp vendor/smichaelsen/typo3-gitlab-ci/src/gitlab-ci.yml .gitlab-ci.yml"
         ]
-    },
+    }

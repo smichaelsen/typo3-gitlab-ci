@@ -1,0 +1,21 @@
+variables:
+  COMPOSER_CACHE_DIR: /composer-cache
+
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+    - /composer-cache
+
+stages:
+  - test
+
+deploy:
+  stage: test
+  tags:
+      - php
+  before_script:
+    - apt-get update -qq && apt-get -qq -o dir::cache::archives="apt-cache" install -y php5 php5-cli php5-curl
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  script:
+    - composer install --no-dev
+    - bin/phpunit tests/*
