@@ -12,7 +12,7 @@ class GitLabCiFileTests extends TestCase
     public function gitlabCiFileValid()
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://gitlab.com/api/v3/ci/lint");
+        curl_setopt($ch, CURLOPT_URL, "https://appzap.githost.io/api/v3/ci/lint");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_HEADER, 1);

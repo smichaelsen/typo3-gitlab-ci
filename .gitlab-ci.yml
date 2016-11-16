@@ -1,10 +1,10 @@
 variables:
-  COMPOSER_CACHE_DIR: /composer-cache
+  COMPOSER_CACHE_DIR: .composer-cache
 
 cache:
   key: "$CI_BUILD_REF_NAME"
   paths:
-    - /composer-cache
+    - .composer-cache
 
 stages:
   - test
