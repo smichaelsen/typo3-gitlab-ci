@@ -18,4 +18,4 @@ test:
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   script:
     - composer install
-    - bin/phpunit tests/*
+    - bin/phpunit --bootstrap vendor/autoload.php tests/*

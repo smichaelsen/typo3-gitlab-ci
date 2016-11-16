@@ -1,6 +1,7 @@
 <?php
 namespace Smichaelsen\Typo3GitlabCi\Tests;
 
+use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 
 class GitLabCiFileTests extends TestCase
@@ -11,14 +12,17 @@ class GitLabCiFileTests extends TestCase
      */
     public function gitlabCiFileValid()
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://appzap.githost.io/api/v3/ci/lint");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents(__DIR__ . '/../src/gitlab-ci.yml'));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        $result = json_decode(curl_exec($ch), true);
-        curl_close($ch);
+        $client = new Client([
+            'base_uri' => 'https://appzap.githost.io/api/v3/',
+        ]);
+        $data = json_encode([
+            'content' => file_get_contents(__DIR__ . '/../src/gitlab-ci.yml'),
+        ]);
+        $response = $client->request('POST', 'ci/lint', [
+            'body' => $data,
+        ]);
+        $responseBody = $response->getBody();
+        $result = json_decode($responseBody, true);
         $this->assertEquals('valid', $result['status']);
     }
 

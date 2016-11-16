@@ -4,6 +4,7 @@
 		"bin-dir": "bin"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "*"
+		"phpunit/phpunit": "*",
+		"guzzlehttp/guzzle": "~6.0"
 	}
 }
