@@ -9,7 +9,7 @@ cache:
 stages:
   - test
 
-deploy:
+test:
   stage: test
   tags:
       - php
@@ -17,5 +17,5 @@ deploy:
     - apt-get update -qq && apt-get -qq -o dir::cache::archives="apt-cache" install -y php5 php5-cli php5-curl
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   script:
-    - composer install --no-dev
+    - composer install
     - bin/phpunit tests/*
