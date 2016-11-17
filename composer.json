@@ -4,6 +4,7 @@
 		"bin-dir": "bin"
 	},
 	"require": {
+		"typo3/cms": "^7.6 || >=8.0.0 <8.5",
 		"helhum/typo3-console": "4.*"
 	},
 	"require-dev": {
