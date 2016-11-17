@@ -1,11 +1,11 @@
 variables:
-  COMPOSER_CACHE_DIR: /composer-cache
+  COMPOSER_CACHE_DIR: .composer-cache
   NODE_ENV: production
 
 cache:
   key: "$CI_BUILD_REF_NAME"
   paths:
-    - /composer-cache
+    - .composer-cache
 
 stages:
   - deploy
@@ -68,6 +68,7 @@ deploy:
     - PHP_BINARY="${!PHP_BINARY_VARIABLE}"
     - TYPO3_CONSOLE='bin/typo3cms'
     - ssh $SSH_HOST 'cd '$SSH_REMOTE_PATH' && '$TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PRIVATE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f index.php || true) && cp typo3_src/index.php .'
+    - ls -al
 
 sync:
   stage: sync
