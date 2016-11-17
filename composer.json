@@ -3,6 +3,9 @@
 	"config": {
 		"bin-dir": "bin"
 	},
+	"require": {
+		"helhum/typo3-console": "4.*"
+	},
 	"require-dev": {
 		"phpunit/phpunit": "*",
 		"guzzlehttp/guzzle": "~6.0"
