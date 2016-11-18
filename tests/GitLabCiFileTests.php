@@ -20,6 +20,7 @@ class GitLabCiFileTests extends TestCase
         ]);
         $response = $client->request('POST', 'ci/lint', [
             'body' => $data,
+            'headers' => ['Content-Type' => 'application/json'],
         ]);
         $responseBody = $response->getBody();
         $result = json_decode($responseBody, true);
