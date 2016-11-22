@@ -9,12 +9,13 @@ deploy:
   stage: deploy
   tags:
       - php
+      - deploy
   only:
       - master
       - production
   environment: $CI_BUILD_REF_NAME
   before_script:
-    - apt-get update -qq && apt-get -qq -o dir::cache::archives="apt-cache" install -y nodejs npm php5 php5-cli php5-curl php5-gd ruby rsync
+    - apt-get -qq -o dir::cache::archives="apt-cache" install -y nodejs npm php5 php5-cli php5-curl php5-gd ruby rsync git
     - ln -s /usr/bin/nodejs /usr/bin/node
     - gem install sass
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -66,7 +67,7 @@ deploy:
 sync:
   stage: sync
   before_script:
-    - apt-get update -qq && apt-get -qq -o dir::cache::archives="apt-cache" install -y rsync
+    - apt-get -qq -o dir::cache::archives="apt-cache" install -y rsync
     # ssh:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
