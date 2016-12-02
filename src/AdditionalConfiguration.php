@@ -24,3 +24,10 @@ if ((int)TYPO3_branch[0] === 7) {
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = str_replace('[LIVE]', '[' . $environmentConfiguration['ENVNAME'] . ']', $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']);
 
 unset ($environmentConfiguration);
+
+\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
+    \TYPO3\CMS\Backend\Backend\ToolbarItems\SystemInformationToolbarItem::class,
+    'getSystemInformation',
+    \Smichaelsen\Typo3GitlabCi\Slot\SystemInformationToolbarSlot::class,
+    'addItems'
+);
