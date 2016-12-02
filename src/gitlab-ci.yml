@@ -29,7 +29,7 @@ deploy:
     - echo "Building..."
     - BRANCH=$CI_BUILD_REF_NAME
     - composer install --no-dev
-    - cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php typo3conf/
+    - cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php $WEBROOT_FOLDER'typo3conf/'
     - if [ -f '.htaccess.'$BRANCH ]; then cp '.htaccess.'$BRANCH .htaccess ; fi
 
     - echo "Deploying application..."
@@ -57,12 +57,12 @@ deploy:
     - rsync -az -e "ssh" environmentConfiguration.txt $SSH_HOST:$SSH_REMOTE_PRIVATE_PATH/environmentConfiguration.txt
     - rm environmentConfiguration.txt
 
-    - rsync -az -e "ssh" --delete --exclude=fileadmin --exclude=download --exclude=typo3conf/l10n --exclude=.git --exclude=node_modules --exclude=bower_components --exclude=typo3temp --exclude=.sass-cache --exclude=/uploads ./ $SSH_HOST:$SSH_REMOTE_PATH
+    - rsync -az -e "ssh" --delete --exclude=environmentConfiguration.txt --exclude=fileadmin --exclude=download --exclude=typo3conf/l10n --exclude=.git --exclude=node_modules --exclude=bower_components --exclude=typo3temp --exclude=.sass-cache --exclude=uploads ./ $SSH_HOST:$SSH_REMOTE_PATH
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE}"
-    - TYPO3_CONSOLE=$PHP_BINARY' bin/typo3cms'
-    - ssh $SSH_HOST 'cd '$SSH_REMOTE_PATH' && '$TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PRIVATE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PRIVATE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f index.php || true) && cp typo3_src/index.php .'
+    - TYPO3_CONSOLE=$PHP_BINARY' '$WEBROOT_FOLDER'bin/typo3cms'
+    - ssh $SSH_HOST 'cd '$SSH_REMOTE_PATH' && '$TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PRIVATE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PRIVATE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f '$WEBROOT_FOLDER'index.php || true) && cp vendor/typo3/cms/index.php '$WEBROOT_FOLDER'.'
 
 sync:
   stage: sync
