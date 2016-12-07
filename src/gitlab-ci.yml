@@ -28,7 +28,7 @@ deploy:
   script:
     - echo "Building..."
     - BRANCH=$CI_BUILD_REF_NAME
-    - composer install --no-dev
+    - composer install --no-dev --prefer-dist --optimize-autoloader
     - cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php $WEBROOT_FOLDER'typo3conf/'
     - if [ -f '.htaccess.'$BRANCH ]; then cp '.htaccess.'$BRANCH .htaccess ; fi
 
