@@ -1,29 +1,36 @@
 <?php
 
-$environmentConfiguration = parse_ini_file(__DIR__ . '/../../files/environmentConfiguration.txt');
+$dotenv = new Dotenv\Dotenv(__DIR__ . '/../../files');
+$dotenv->load();
+
+$dotenv->required([
+    'DBNAME',
+    'DBPASS',
+    'DBUSER',
+    'DBHOST',
+    'ENVNAME',
+]);
 
 $credentials = [
-    'database' => $environmentConfiguration['DBNAME'],
-    'password' => $environmentConfiguration['DBPASS'],
-    'username' => $environmentConfiguration['DBUSER'],
-    'host' => $environmentConfiguration['DBHOST'],
+    'database' => getenv('DBNAME'),
+    'password' => getenv('DBPASS'),
+    'username' => getenv('DBUSER'),
+    'host' => getenv('DBHOST'),
 ];
 
-if ((int)TYPO3_branch[0] === 7) {
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['database'] = $environmentConfiguration['DBNAME'];
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['password'] = $environmentConfiguration['DBPASS'];
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['username'] = $environmentConfiguration['DBUSER'];
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['host'] = $environmentConfiguration['DBHOST'];
+if ((int) TYPO3_branch[0] === 7) {
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['database'] = getenv('DBNAME');
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['password'] = getenv('DBPASS');
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['username'] = getenv('DBUSER');
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['host'] = getenv('DBHOST');
 } else {
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'] = $environmentConfiguration['DBNAME'];
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['password'] = $environmentConfiguration['DBPASS'];
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['user'] = $environmentConfiguration['DBUSER'];
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['host'] = $environmentConfiguration['DBHOST'];
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'] = getenv('DBNAME');
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['password'] = getenv('DBPASS');
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['user'] = getenv('DBUSER');
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['host'] = getenv('DBHOST');
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = str_replace('[LIVE]', '[' . $environmentConfiguration['ENVNAME'] . ']', $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']);
-
-unset ($environmentConfiguration);
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = str_replace('[LIVE]', '[' . getenv('ENVNAME') . ']', $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']);
 
 \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
     \TYPO3\CMS\Backend\Backend\ToolbarItems\SystemInformationToolbarItem::class,

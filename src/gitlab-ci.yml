@@ -43,21 +43,21 @@ deploy:
     - SSH_REMOTE_PRIVATE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PRIVATE_PATH'
     - SSH_REMOTE_PRIVATE_PATH="${!SSH_REMOTE_PRIVATE_PATH_VARIABLE}"
 
-    - echo $'ENVNAME=\''$BRANCH$'\'' >> environmentConfiguration.txt
-    - echo $'GIT_REFERENCE=\''$CI_BUILD_REF$'\'' >> environmentConfiguration.txt
+    - echo $'ENVNAME=\''$BRANCH$'\'' >> .env
+    - echo $'GIT_REFERENCE=\''$CI_BUILD_REF$'\'' >> .env
     - DBNAME_VARIABLE=$BRANCH'_DBNAME'
-    - echo $'DBNAME=\''"${!DBNAME_VARIABLE}"$'\'' >> environmentConfiguration.txt
+    - echo $'DBNAME=\''"${!DBNAME_VARIABLE}"$'\'' >> .env
     - DBUSER_VARIABLE=$BRANCH'_DBUSER'
-    - echo $'DBUSER=\''"${!DBUSER_VARIABLE}"$'\'' >> environmentConfiguration.txt
+    - echo $'DBUSER=\''"${!DBUSER_VARIABLE}"$'\'' >> .env
     - DBPASS_VARIABLE=$BRANCH'_DBPASS'
-    - echo $'DBPASS=\''"${!DBPASS_VARIABLE}"$'\'' >> environmentConfiguration.txt
+    - echo $'DBPASS=\''"${!DBPASS_VARIABLE}"$'\'' >> .env
     - DBHOST_VARIABLE=$BRANCH'_DBHOST'
-    - echo $'DBHOST=\''"${!DBHOST_VARIABLE}"$'\'' >> environmentConfiguration.txt
-    - cat environmentConfiguration.txt
-    - rsync -az -e "ssh" environmentConfiguration.txt $SSH_HOST:$SSH_REMOTE_PRIVATE_PATH/environmentConfiguration.txt
-    - rm environmentConfiguration.txt
+    - echo $'DBHOST=\''"${!DBHOST_VARIABLE}"$'\'' >> .env
+    - cat .env
+    - rsync -az -e "ssh" .env $SSH_HOST:$SSH_REMOTE_PRIVATE_PATH/.env
+    - rm .env
 
-    - rsync -az -e "ssh" --delete --exclude=environmentConfiguration.txt --exclude=fileadmin --exclude=download --exclude=typo3conf/l10n --exclude=.git --exclude=node_modules --exclude=bower_components --exclude=typo3temp --exclude=.sass-cache --exclude=uploads ./ $SSH_HOST:$SSH_REMOTE_PATH
+    - rsync -az -e "ssh" --delete --exclude=.env --exclude=fileadmin --exclude=download --exclude=typo3conf/l10n --exclude=.git --exclude=node_modules --exclude=bower_components --exclude=typo3temp --exclude=.sass-cache --exclude=uploads ./ $SSH_HOST:$SSH_REMOTE_PATH
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE}"
