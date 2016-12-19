@@ -7,7 +7,7 @@ This package can help you to set up GitLab CI and TYPO3. Your TYPO3 installation
 Include the following configuration in your root composer.json:
 
     "require": {
-    	"smichaelsen/typo3-gitlab-ci": "dev-task/dotenv as dev-master"
+    	"smichaelsen/typo3-gitlab-ci": "dev-master"
     },
     "extra": {
 		"helhum/typo3-console": {
@@ -37,7 +37,8 @@ Generate an SSH key pair and store the private key in `SSH_PRIVATE_KEY`. Add the
 your target server(s).
 
 Set `SSH_HOST` to the hostname of your target server. The deployment will be done to the `SSH_REMOTE_PATH`. Additionally
-provide a `SSH_REMOTE_PRIVATE_PATH` for storing files outside the web root.
+provide a `SSH_REMOTE_PRIVATE_PATH` for storing files outside the web root. Optionally you can provide a `$WEBROOT` path
+if your web root is not your repository root.
 
 `SSH_HOST`, `SSH_REMOTE_PATH` and `SSH_REMOTE_PRIVATE_PATH` can be prefixed with a branch name, e.g. `master_SSH_HOST`
 to make the setting valid for a certain branch.
