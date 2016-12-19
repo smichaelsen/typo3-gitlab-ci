@@ -35,24 +35,24 @@ deploy:
     - echo "Deploying application..."
 
     - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
-    - SSH_HOST="${!SSH_HOST_VARIABLE}"
-    - if [ -z "$SSH_HOST" ]; then echo $BRANCH' is not deployed because there is no variable '$SSH_HOST_VARIABLE' configured.' && exit 0; fi
+    - SSH_HOST="${!SSH_HOST_VARIABLE-`echo $SSH_HOST`}"
+    - if [ -z "$SSH_HOST" ]; then echo $BRANCH' is not deployed because there is no variable '$SSH_HOST' configured.' && exit 0; fi
 
     - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
-    - SSH_REMOTE_PATH="${!SSH_REMOTE_PATH_VARIABLE}"
+    - SSH_REMOTE_PATH=${!SSH_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}
     - SSH_REMOTE_PRIVATE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PRIVATE_PATH'
-    - SSH_REMOTE_PRIVATE_PATH="${!SSH_REMOTE_PRIVATE_PATH_VARIABLE}"
+    - SSH_REMOTE_PRIVATE_PATH="${!SSH_REMOTE_PRIVATE_PATH_VARIABLE-`echo $SSH_REMOTE_PRIVATE_PATH`}"
 
     - echo $'ENVNAME=\''$BRANCH$'\'' >> .env
     - echo $'GIT_REFERENCE=\''$CI_BUILD_REF$'\'' >> .env
     - DBNAME_VARIABLE=$BRANCH'_DBNAME'
-    - echo $'DBNAME=\''"${!DBNAME_VARIABLE}"$'\'' >> .env
+    - echo $'DBNAME=\''"${!DBNAME_VARIABLE-`echo $DBNAME`}"$'\'' >> .env
     - DBUSER_VARIABLE=$BRANCH'_DBUSER'
-    - echo $'DBUSER=\''"${!DBUSER_VARIABLE}"$'\'' >> .env
+    - echo $'DBUSER=\''"${!DBUSER_VARIABLE-`echo $DBUSER`}"$'\'' >> .env
     - DBPASS_VARIABLE=$BRANCH'_DBPASS'
-    - echo $'DBPASS=\''"${!DBPASS_VARIABLE}"$'\'' >> .env
+    - echo $'DBPASS=\''"${!DBPASS_VARIABLE-`echo $DBPASS`}"$'\'' >> .env
     - DBHOST_VARIABLE=$BRANCH'_DBHOST'
-    - echo $'DBHOST=\''"${!DBHOST_VARIABLE}"$'\'' >> .env
+    - echo $'DBHOST=\''"${!DBHOST_VARIABLE-`echo $DBHOST`}"$'\'' >> .env
     - cat .env
     - rsync -az -e "ssh" .env $SSH_HOST:$SSH_REMOTE_PRIVATE_PATH/.env
     - rm .env
@@ -60,7 +60,7 @@ deploy:
     - rsync -az -e "ssh" --delete --exclude=.env --exclude=fileadmin --exclude=download --exclude=typo3conf/l10n --exclude=.git --exclude=node_modules --exclude=bower_components --exclude=typo3temp --exclude=.sass-cache --exclude=uploads ./ $SSH_HOST:$SSH_REMOTE_PATH
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
-    - PHP_BINARY="${!PHP_BINARY_VARIABLE}"
+    - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
     - TYPO3_CONSOLE=$PHP_BINARY' '$WEBROOT_FOLDER'bin/typo3cms'
     - ssh $SSH_HOST 'cd '$SSH_REMOTE_PATH' && '$TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PRIVATE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PRIVATE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f '$WEBROOT_FOLDER'index.php || true) && cp vendor/typo3/cms/index.php '$WEBROOT_FOLDER'.'
 
@@ -80,16 +80,17 @@ sync:
     - BRANCH=$CI_BUILD_REF_NAME
     - echo "Syncing fileadmin..."
     - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
-    - SSH_REMOTE_PATH="${!SSH_REMOTE_PATH_VARIABLE}"
+    - SSH_REMOTE_PATH="${!SSH_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}"
     - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
-    - SSH_HOST="${!SSH_HOST_VARIABLE}"
+    - SSH_HOST="${!SSH_HOST_VARIABLE-`echo $SSH_HOST`}"
     - FILEADMIN_SYNC_SOURCE_VARIABLE=$BRANCH'_FILEADMIN_SYNC_SOURCE'
-    - FILEADMIN_SYNC_SOURCE="${!FILEADMIN_SYNC_SOURCE_VARIABLE}"
+    - FILEADMIN_SYNC_SOURCE="${!FILEADMIN_SYNC_SOURCE_VARIABLE-`echo $FILEADMIN_SYNC_SOURCE`}"
     - if [ -z "$FILEADMIN_SYNC_SOURCE" ]; then exit 0 ; fi
+    - if [ "$FILEADMIN_SYNC_SOURCE" == "$BRANCH" ]; then exit 0 ; fi
     - FILEADMIN_SYNC_SOURCE_HOST_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_HOST'
-    - FILEADMIN_SYNC_SOURCE_HOST="${!FILEADMIN_SYNC_SOURCE_HOST_VARIABLE}"
+    - FILEADMIN_SYNC_SOURCE_HOST="${!FILEADMIN_SYNC_SOURCE_HOST_VARIABLE-`echo $SSH_HOST`}"
     - FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_REMOTE_PATH'
-    - FILEADMIN_SYNC_SOURCE_REMOTE_PATH="${!FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE}"
+    - FILEADMIN_SYNC_SOURCE_REMOTE_PATH="${!FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}"
     - echo 'Sync from host '$FILEADMIN_SYNC_SOURCE_HOST':'$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin to '$SSH_HOST':'$SSH_REMOTE_PATH'fileadmin'
     - ssh $FILEADMIN_SYNC_SOURCE_HOST 'cd '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH' && tar --exclude=fileadmin/_processed_ -zcf fileadmin.tgz fileadmin'
     - scp $FILEADMIN_SYNC_SOURCE_HOST:$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz' .

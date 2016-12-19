@@ -26,5 +26,4 @@ class GitLabCiFileTests extends TestCase
         $result = json_decode($responseBody, true);
         $this->assertEquals('valid', $result['status']);
     }
-
 }

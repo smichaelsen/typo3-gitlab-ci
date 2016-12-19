@@ -16,5 +16,14 @@
 		"psr-4": {
 			"Smichaelsen\\Typo3GitlabCi\\": "src/Classes/"
 		}
+	},
+	"extra": {
+		"helhum/typo3-console": {
+			"install-binary": false,
+			"install-extension-dummy": false
+		},
+		"typo3/cms": {
+			"cms-package-dir": "{$vendor-dir}/typo3/cms"
+		}
 	}
 }
