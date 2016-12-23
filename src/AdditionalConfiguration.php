@@ -1,6 +1,12 @@
 <?php
 
-$dotenv = new Dotenv\Dotenv(__DIR__ . '/../../files');
+if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['dotenvPath'])) {
+    $dotenvPath = PATH_site . $GLOBALS['TYPO3_CONF_VARS']['EXT']['dotenvPath'];
+} else {
+    $dotenvPath = __DIR__ . '/../../files';
+}
+
+$dotenv = new Dotenv\Dotenv($dotenvPath);
 $dotenv->load();
 
 $dotenv->required([
@@ -30,7 +36,11 @@ if ((int) TYPO3_branch[0] === 7) {
     $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['host'] = getenv('DBHOST');
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = str_replace('[LIVE]', '[' . getenv('ENVNAME') . ']', $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']);
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = str_replace(
+    '[LIVE]',
+    '[' . getenv('ENVNAME') . ']',
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']
+);
 
 \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
     \TYPO3\CMS\Backend\Backend\ToolbarItems\SystemInformationToolbarItem::class,
