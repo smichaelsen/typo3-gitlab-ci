@@ -30,7 +30,7 @@ deploy:
     - BRANCH=$CI_BUILD_REF_NAME
     - composer install --no-dev --prefer-dist --optimize-autoloader
     - cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php $WEBROOT_FOLDER'typo3conf/'
-    - if [ -f '.htaccess.'$BRANCH ]; then cp '.htaccess.'$BRANCH .htaccess ; fi
+    - if [ -f $WEBROOT_FOLDER'.htaccess.'$BRANCH ]; then cp $WEBROOT_FOLDER'.htaccess.'$BRANCH $WEBROOT_FOLDER'.htaccess' ; fi
 
     - echo "Deploying application..."
 
@@ -61,7 +61,7 @@ deploy:
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
-    - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH$WEBROOT_FOLDER'bin/typo3cms'
+    - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'bin/typo3cms'
     - ssh $SSH_HOST $TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PRIVATE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PRIVATE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f '$SSH_REMOTE_PATH$WEBROOT_FOLDER'index.php || true) && cp '$SSH_REMOTE_PATH'vendor/typo3/cms/index.php '$SSH_REMOTE_PATH$WEBROOT_FOLDER'.'
 
 sync:

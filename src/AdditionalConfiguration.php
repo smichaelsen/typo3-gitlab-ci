@@ -3,7 +3,7 @@
 if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['dotenvPath'])) {
     $dotenvPath = PATH_site . $GLOBALS['TYPO3_CONF_VARS']['EXT']['dotenvPath'];
 } else {
-    $dotenvPath = __DIR__ . '/../../files';
+    $dotenvPath = __DIR__ . '/../..';
 }
 
 $dotenv = new Dotenv\Dotenv($dotenvPath);
