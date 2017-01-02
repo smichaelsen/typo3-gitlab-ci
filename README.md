@@ -15,7 +15,8 @@ Include the following configuration in your root composer.json:
 			"install-extension-dummy": false
 		},
 		"typo3/cms": {
-			"cms-package-dir": "{$vendor-dir}/typo3/cms"
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"web-dir": "Web"
 		}
 	},
     "scripts": {
