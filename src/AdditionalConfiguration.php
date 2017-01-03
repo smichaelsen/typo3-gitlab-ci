@@ -39,7 +39,7 @@ if ((int) TYPO3_branch[0] === 7) {
         ],
     ];
 }
-$GLOBALS['TYPO3_CONF_VARS'] = array_merge_recursive(
+$GLOBALS['TYPO3_CONF_VARS'] = array_replace_recursive(
     $GLOBALS['TYPO3_CONF_VARS'],
     ['DB' => $dbConfig]
 );
