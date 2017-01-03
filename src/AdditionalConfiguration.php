@@ -28,10 +28,13 @@ if ((int) TYPO3_branch[0] === 7) {
     $dbConfig = [
         'Connections' => [
             'Default' => [
+                'charset' => 'utf8',
                 'dbname' => getenv('DBNAME'),
-                'password' => getenv('DBPASS'),
-                'user' => getenv('DBUSER'),
+                'driver' => 'mysqli',
                 'host' => getenv('DBHOST'),
+                'password' => getenv('DBPASS'),
+                'port' => '3306',
+                'user' => getenv('DBUSER'),
             ],
         ],
     ];
