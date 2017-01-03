@@ -55,6 +55,8 @@ deploy:
     - echo $'DBHOST=\''"${!DBHOST_VARIABLE-`echo $DBHOST`}"$'\'' >> .env
     - ENCRYPTION_KEY_VARIABLE=$BRANCH'_ENCRYPTION_KEY'
     - echo $'ENCRYPTION_KEY=\''"${!ENCRYPTION_KEY_VARIABLE-`echo $ENCRYPTION_KEY`}"$'\'' >> .env
+    - INSTALL_TOOL_PASSWORD_VARIABLE=$BRANCH'_INSTALL_TOOL_PASSWORD'
+    - echo $'INSTALL_TOOL_PASSWORD=\''"${!INSTALL_TOOL_PASSWORD_VARIABLE-`echo $INSTALL_TOOL_PASSWORD`}"$'\'' >> .env
     - cat .env
     - rsync -az -e "ssh" .env $SSH_HOST:$SSH_REMOTE_PRIVATE_PATH/.env
     - rm .env

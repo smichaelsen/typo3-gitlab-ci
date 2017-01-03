@@ -48,9 +48,13 @@ if (!empty(getenv('ENCRYPTION_KEY'))) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = getenv('ENCRYPTION_KEY');
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = str_replace(
-    '[LIVE]',
-    '[' . getenv('ENVNAME') . ']',
+if (!empty(getenv('INSTALL_TOOL_PASSWORD'))) {
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword'] = md5(getenv('INSTALL_TOOL_PASSWORD'));
+}
+
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = sprintf(
+    '[%s] %s',
+    getenv('ENVNAME'),
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename']
 );
 

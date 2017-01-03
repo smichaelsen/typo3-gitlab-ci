@@ -64,6 +64,14 @@ If set it takes precedence over a `$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptio
  
 You can prefix it with a branch name, e.g. `master_ENCRYPTION_KEY` to make the setting valid for a certain branch.
 
+## Install Tool password
+
+You can set your TYPO3 install tool password in `INSTALL_TOOL_PASSWORD`.
+If set it takes precedence over a `$GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword']` that might be set in your
+`LocalConfiguration.php`.
+ 
+You can prefix it with a branch name, e.g. `master_INSTALL_TOOL_PASSWORD` to make the setting valid for a certain branch.
+
 ## fileadmin sync
 
 If you want to sync the TYPO3 fileadmin directory between installations, set the `FILEADMIN_SYNC_SOURCE` to a certain
