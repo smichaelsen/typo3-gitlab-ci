@@ -46,7 +46,7 @@ to make the setting valid for a certain branch.
 
 ## Database credentials
 
-Set `DNAME`, `DBUSER`, `DBPASS` and `DBHOST`.
+Set `DBNAME`, `DBUSER`, `DBPASS` and `DBHOST`.
 
 You can prefix them with a branch name, e.g. `master_DBNAME` to make the setting valid for a certain branch.
 
