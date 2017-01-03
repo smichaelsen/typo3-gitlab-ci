@@ -52,7 +52,7 @@ You can prefix them with a branch name, e.g. `master_DBNAME` to make the setting
 
 ## PHP binary
 
-Set `PHP_BINARY`.
+Set `PHP_BINARY` to the php binary path on the target server.
 
 You can prefix it with a branch name, e.g. `master_PHP_BINARY` to make the setting valid for a certain branch.
 
