@@ -17,13 +17,6 @@ $dotenv->required([
     'ENVNAME',
 ]);
 
-$credentials = [
-    'database' => getenv('DBNAME'),
-    'password' => getenv('DBPASS'),
-    'username' => getenv('DBUSER'),
-    'host' => getenv('DBHOST'),
-];
-
 if ((int) TYPO3_branch[0] === 7) {
     $dbConfig = [
         'database' => getenv('DBNAME'),
@@ -47,6 +40,10 @@ $GLOBALS['TYPO3_CONF_VARS'] = array_merge_recursive(
     $GLOBALS['TYPO3_CONF_VARS'],
     ['DB' => $dbConfig]
 );
+
+if (!empty(getenv('ENCRYPTION_KEY'))) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = getenv('ENCRYPTION_KEY');
+}
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = str_replace(
     '[LIVE]',
