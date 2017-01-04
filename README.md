@@ -38,10 +38,9 @@ Generate an SSH key pair and store the private key in `SSH_PRIVATE_KEY`. Add the
 your target server(s).
 
 Set `SSH_HOST` to the hostname of your target server. The deployment will be done to the `SSH_REMOTE_PATH`. Additionally
-provide a `SSH_REMOTE_PRIVATE_PATH` for storing files outside the web root. Optionally you can provide a `$WEBROOT` path
-if your web root is not your repository root.
+provide a `$WEBROOT_FOLDER` path as relative path from `SSH_REMOTE_PATH` to your web root (recommended: `Web/`).
 
-`SSH_HOST`, `SSH_REMOTE_PATH` and `SSH_REMOTE_PRIVATE_PATH` can be prefixed with a branch name, e.g. `master_SSH_HOST`
+`SSH_HOST` and `SSH_REMOTE_PATH` can be prefixed with a branch name, e.g. `master_SSH_HOST`
 to make the setting valid for a certain branch.
 
 ## Database credentials

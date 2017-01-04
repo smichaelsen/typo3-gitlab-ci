@@ -40,8 +40,6 @@ deploy:
 
     - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
     - SSH_REMOTE_PATH=${!SSH_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}
-    - SSH_REMOTE_PRIVATE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PRIVATE_PATH'
-    - SSH_REMOTE_PRIVATE_PATH="${!SSH_REMOTE_PRIVATE_PATH_VARIABLE-`echo $SSH_REMOTE_PRIVATE_PATH`}"
 
     - echo $'ENVNAME=\''$BRANCH$'\'' >> .env
     - echo $'GIT_REFERENCE=\''$CI_BUILD_REF$'\'' >> .env
@@ -58,15 +56,35 @@ deploy:
     - INSTALL_TOOL_PASSWORD_VARIABLE=$BRANCH'_INSTALL_TOOL_PASSWORD'
     - echo $'INSTALL_TOOL_PASSWORD=\''"${!INSTALL_TOOL_PASSWORD_VARIABLE-`echo $INSTALL_TOOL_PASSWORD`}"$'\'' >> .env
     - cat .env
-    - rsync -az -e "ssh" .env $SSH_HOST:$SSH_REMOTE_PRIVATE_PATH/.env
+    - rsync -az -e "ssh" .env $SSH_HOST:$SSH_REMOTE_PATH'.env'
     - rm .env
 
-    - rsync -az -e "ssh" --delete --exclude=.env --exclude=fileadmin --exclude=download --exclude=typo3conf/l10n --exclude=.git --exclude=node_modules --exclude=bower_components --exclude=typo3temp --exclude=.sass-cache --exclude=uploads ./ $SSH_HOST:$SSH_REMOTE_PATH
+    - >
+      rsync -az -e "ssh" --delete
+      --exclude=.htaccess.*
+      --exclude=.env
+      --exclude=.editorconfig
+      --exclude=composer.json
+      --exclude=composer.lock
+      --exclude=fileadmin
+      --exclude=download
+      --exclude=dynamicReturnTypeMeta.json
+      --exclude=typo3conf/l10n
+      --exclude=.git
+      --exclude=.gitignore
+      --exclude=.gitlab-ci.yml
+      --exclude=*.md
+      --exclude=node_modules
+      --exclude=bower_components
+      --exclude=typo3temp
+      --exclude=.sass-cache
+      --exclude=uploads
+      ./ $SSH_HOST:$SSH_REMOTE_PATH
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
     - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'bin/typo3cms'
-    - ssh $SSH_HOST $TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PRIVATE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PRIVATE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f '$SSH_REMOTE_PATH$WEBROOT_FOLDER'index.php || true) && cp '$SSH_REMOTE_PATH'vendor/typo3/cms/index.php '$SSH_REMOTE_PATH$WEBROOT_FOLDER'.'
+    - ssh $SSH_HOST $TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f '$SSH_REMOTE_PATH$WEBROOT_FOLDER'index.php || true) && cp '$SSH_REMOTE_PATH'vendor/typo3/cms/index.php '$SSH_REMOTE_PATH$WEBROOT_FOLDER'.'
 
 sync:
   stage: sync
