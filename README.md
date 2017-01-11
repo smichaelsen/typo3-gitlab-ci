@@ -20,11 +20,11 @@ Include the following configuration in your root composer.json:
 		}
 	},
     "scripts": {
-        "post-install-cmd": [
+        "copy-gitlab-ci": [
             "cp vendor/smichaelsen/typo3-gitlab-ci/src/gitlab-ci.yml .gitlab-ci.yml"
         ],
-        "post-update-cmd": [
-            "cp vendor/smichaelsen/typo3-gitlab-ci/src/gitlab-ci.yml .gitlab-ci.yml"
+        "post-autoload-dump": [
+            "@copy-gitlab-ci"
         ]
     }
 
