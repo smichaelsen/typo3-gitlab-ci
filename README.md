@@ -37,8 +37,9 @@ Set the following variables in your GitLab project to get a working deployment.
 Generate an SSH key pair and store the private key in `SSH_PRIVATE_KEY`. Add the public key to `.ssh/authorized_keys` on
 your target server(s).
 
-Set `SSH_HOST` to the hostname of your target server. The deployment will be done to the `SSH_REMOTE_PATH`. Additionally
-provide a `$WEBROOT_FOLDER` path as relative path from `SSH_REMOTE_PATH` to your web root (recommended: `Web/`).
+Set `SSH_HOST` to the hostname (IP or domain) of your target server. Prepend it with the ssh username like this:
+`username@hostname`. The deployment will be done to the `SSH_REMOTE_PATH`. Additionally provide a `$WEBROOT_FOLDER` path
+as relative path from `SSH_REMOTE_PATH` to your web root (recommended: `Web/`).
 
 `SSH_HOST` and `SSH_REMOTE_PATH` can be prefixed with a branch name, e.g. `master_SSH_HOST`
 to make the setting valid for a certain branch.
