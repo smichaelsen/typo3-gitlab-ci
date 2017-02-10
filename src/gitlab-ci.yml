@@ -113,9 +113,9 @@ sync:
     - FILEADMIN_SYNC_SOURCE_HOST="${!FILEADMIN_SYNC_SOURCE_HOST_VARIABLE-`echo $SSH_HOST`}"
     - FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_REMOTE_PATH'
     - FILEADMIN_SYNC_SOURCE_REMOTE_PATH="${!FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}"
-    - echo 'Sync from host '$FILEADMIN_SYNC_SOURCE_HOST':'$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin to '$SSH_HOST':'$SSH_REMOTE_PATH'fileadmin'
-    - ssh $FILEADMIN_SYNC_SOURCE_HOST 'cd '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH' && tar --exclude=fileadmin/_processed_ -zcf fileadmin.tgz fileadmin'
+    - echo 'Sync from host '$FILEADMIN_SYNC_SOURCE_HOST':'$FILEADMIN_SYNC_SOURCE_REMOTE_PATH$WEBROOT_FOLDER'fileadmin to '$SSH_HOST':'$SSH_REMOTE_PATH$WEBROOT_FOLDER'fileadmin'
+    - ssh $FILEADMIN_SYNC_SOURCE_HOST 'cd '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH' && tar --exclude=fileadmin/_processed_ -zcf fileadmin.tgz '$WEBROOT_FOLDER'fileadmin'
     - scp $FILEADMIN_SYNC_SOURCE_HOST:$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz' .
     - tar -zxf fileadmin.tgz
     - ssh $FILEADMIN_SYNC_SOURCE_HOST 'rm -f '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz'
-    - rsync -az -e "ssh" --delete --exclude=_processed_ fileadmin $SSH_HOST:$SSH_REMOTE_PATH
+    - rsync -az -e "ssh" --delete --exclude=_processed_ $WEBROOT_FOLDER'fileadmin' $SSH_HOST':'$SSH_REMOTE_PATH$WEBROOT_FOLDER'fileadmin'
