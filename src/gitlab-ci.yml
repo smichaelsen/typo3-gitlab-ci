@@ -1,39 +1,92 @@
-variables:
-  NODE_ENV: production
-
 stages:
+  - composer
+  - build
   - deploy
   - sync
 
+composer:
+  stage: composer
+  image: webdevops/php:ubuntu-16.04
+  before_script:
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - mkdir .Build
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=./ --filename=composer
+    - export COMPOSER_CACHE_DIR=/cache/composer
+  script:
+    - ./composer install --no-dev --prefer-dist --optimize-autoloader
+    - cp -R bin .Build/
+    - cp -R vendor .Build/
+    - cp -R Web .Build/
+  artifacts:
+    # We grant 30 minutes here because the result has to survive the build stage and is used in the deploy stage
+    expire_in: 30 minutes
+    paths:
+      - .Build
+
+build_extensions:
+  stage: build
+  image: node:6
+  variables:
+    NODE_ENV: production
+  dependencies:
+    - composer
+  script:
+    - if [ -f ./gitlab-ci-scripts/build-extensions.sh ]; then cd .Build && ../gitlab-ci-scripts/build-extensions.sh && cd -; fi
+  artifacts:
+    expire_in: 20 minutes
+    paths:
+      - .Build/Web/typo3conf/ext
+
+prepare_typo3:
+  stage: build
+  image: webdevops/php:ubuntu-16.04
+  script:
+    - cp .Build/vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php .Build/Web/typo3conf/
+    - if [ -f .Build/Web/.htaccess.$CI_BUILD_REF_NAME ]; then cp .Build/Web/.htaccess.$CI_BUILD_REF_NAME .Build/Web/.htaccess ; fi
+    - (rm -f .Build/Web/index.php || true) && cp .Build/vendor/typo3/cms/index.php .Build/Web/index.php
+    - BRANCH=$CI_BUILD_REF_NAME
+    - echo $'ENVNAME=\''$BRANCH$'\'' >> .Build/.env
+    - echo $'GIT_REFERENCE=\''$CI_BUILD_REF$'\'' >> .Build/.env
+    - DBNAME_VARIABLE=$BRANCH'_DBNAME'
+    - echo $'DBNAME=\''"${!DBNAME_VARIABLE-`echo $DBNAME`}"$'\'' >> .Build/.env
+    - DBUSER_VARIABLE=$BRANCH'_DBUSER'
+    - echo $'DBUSER=\''"${!DBUSER_VARIABLE-`echo $DBUSER`}"$'\'' >> .Build/.env
+    - DBPASS_VARIABLE=$BRANCH'_DBPASS'
+    - echo $'DBPASS=\''"${!DBPASS_VARIABLE-`echo $DBPASS`}"$'\'' >> .Build/.env
+    - DBHOST_VARIABLE=$BRANCH'_DBHOST'
+    - echo $'DBHOST=\''"${!DBHOST_VARIABLE-`echo $DBHOST`}"$'\'' >> .Build/.env
+    - ENCRYPTION_KEY_VARIABLE=$BRANCH'_ENCRYPTION_KEY'
+    - echo $'ENCRYPTION_KEY=\''"${!ENCRYPTION_KEY_VARIABLE-`echo $ENCRYPTION_KEY`}"$'\'' >> .Build/.env
+    - INSTALL_TOOL_PASSWORD_VARIABLE=$BRANCH'_INSTALL_TOOL_PASSWORD'
+    - echo $'INSTALL_TOOL_PASSWORD=\''"${!INSTALL_TOOL_PASSWORD_VARIABLE-`echo $INSTALL_TOOL_PASSWORD`}"$'\'' >> .Build/.env
+  dependencies:
+    - composer
+  artifacts:
+    expire_in: 20 minutes
+    paths:
+      - .Build/.env
+      - .Build/Web/.htaccess
+      - .Build/Web/index.php
+      - .Build/Web/typo3conf/AdditionalConfiguration.php
+
 deploy:
   stage: deploy
-  tags:
-      - php
-      - deploy
-  only:
-      - master
-      - production
+  dependencies:
+    - composer
+    - build_extensions
+    - prepare_typo3
   environment: $CI_BUILD_REF_NAME
+  image: webdevops/php:ubuntu-16.04
   before_script:
-    - apt-get -qq -o dir::cache::archives="apt-cache" install -y nodejs npm php5 php5-cli php5-curl php5-gd ruby rsync git
-    - ln -s /usr/bin/nodejs /usr/bin/node
-    - gem install sass
-    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-    # ssh:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
   script:
-    - echo "Building..."
     - BRANCH=$CI_BUILD_REF_NAME
-    - composer install --no-dev --prefer-dist --optimize-autoloader
-    - cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php $WEBROOT_FOLDER'typo3conf/'
-    - if [ -f $WEBROOT_FOLDER'.htaccess.'$BRANCH ]; then cp $WEBROOT_FOLDER'.htaccess.'$BRANCH $WEBROOT_FOLDER'.htaccess' ; fi
-
-    - echo "Deploying application..."
-
     - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
     - SSH_HOST="${!SSH_HOST_VARIABLE-`echo $SSH_HOST`}"
     - if [ -z "$SSH_HOST" ]; then echo $BRANCH' is not deployed because there is no variable '$SSH_HOST' configured.' && exit 0; fi
@@ -41,28 +94,9 @@ deploy:
     - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
     - SSH_REMOTE_PATH=${!SSH_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}
 
-    - echo $'ENVNAME=\''$BRANCH$'\'' >> .env
-    - echo $'GIT_REFERENCE=\''$CI_BUILD_REF$'\'' >> .env
-    - DBNAME_VARIABLE=$BRANCH'_DBNAME'
-    - echo $'DBNAME=\''"${!DBNAME_VARIABLE-`echo $DBNAME`}"$'\'' >> .env
-    - DBUSER_VARIABLE=$BRANCH'_DBUSER'
-    - echo $'DBUSER=\''"${!DBUSER_VARIABLE-`echo $DBUSER`}"$'\'' >> .env
-    - DBPASS_VARIABLE=$BRANCH'_DBPASS'
-    - echo $'DBPASS=\''"${!DBPASS_VARIABLE-`echo $DBPASS`}"$'\'' >> .env
-    - DBHOST_VARIABLE=$BRANCH'_DBHOST'
-    - echo $'DBHOST=\''"${!DBHOST_VARIABLE-`echo $DBHOST`}"$'\'' >> .env
-    - ENCRYPTION_KEY_VARIABLE=$BRANCH'_ENCRYPTION_KEY'
-    - echo $'ENCRYPTION_KEY=\''"${!ENCRYPTION_KEY_VARIABLE-`echo $ENCRYPTION_KEY`}"$'\'' >> .env
-    - INSTALL_TOOL_PASSWORD_VARIABLE=$BRANCH'_INSTALL_TOOL_PASSWORD'
-    - echo $'INSTALL_TOOL_PASSWORD=\''"${!INSTALL_TOOL_PASSWORD_VARIABLE-`echo $INSTALL_TOOL_PASSWORD`}"$'\'' >> .env
-    - cat .env
-    - rsync -az -e "ssh" .env $SSH_HOST:$SSH_REMOTE_PATH'.env'
-    - rm .env
-
     - >
       rsync -az -e "ssh" --delete
       --exclude=.htaccess.*
-      --exclude=.env
       --exclude=.editorconfig
       --exclude=composer.json
       --exclude=composer.lock
@@ -79,19 +113,21 @@ deploy:
       --exclude=typo3temp
       --exclude=.sass-cache
       --exclude=uploads
-      ./ $SSH_HOST:$SSH_REMOTE_PATH
+      .Build/ $SSH_HOST:$SSH_REMOTE_PATH
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
     - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'bin/typo3cms'
-    - ssh $SSH_HOST $TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*" && (rm -f '$SSH_REMOTE_PATH$WEBROOT_FOLDER'index.php || true) && cp '$SSH_REMOTE_PATH'vendor/typo3/cms/index.php '$SSH_REMOTE_PATH$WEBROOT_FOLDER'.'
+    - ssh $SSH_HOST $TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*"'
+  artifacts:
+    expire_in: 60 minutes
+    paths:
+      - .Build
 
 sync:
   stage: sync
+  image: webdevops/php:ubuntu-16.04
   before_script:
-    - apt-get -qq -o dir::cache::archives="apt-cache" install -y rsync
-    # ssh:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - mkdir -p ~/.ssh
@@ -113,9 +149,9 @@ sync:
     - FILEADMIN_SYNC_SOURCE_HOST="${!FILEADMIN_SYNC_SOURCE_HOST_VARIABLE-`echo $SSH_HOST`}"
     - FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_REMOTE_PATH'
     - FILEADMIN_SYNC_SOURCE_REMOTE_PATH="${!FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}"
-    - echo 'Sync from host '$FILEADMIN_SYNC_SOURCE_HOST':'$FILEADMIN_SYNC_SOURCE_REMOTE_PATH$WEBROOT_FOLDER'fileadmin to '$SSH_HOST':'$SSH_REMOTE_PATH$WEBROOT_FOLDER'fileadmin'
-    - ssh $FILEADMIN_SYNC_SOURCE_HOST 'cd '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH' && tar --exclude=fileadmin/_processed_ -zcf fileadmin.tgz '$WEBROOT_FOLDER'fileadmin'
+    - echo 'Sync from host '$FILEADMIN_SYNC_SOURCE_HOST':'$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin to '$SSH_HOST':'$SSH_REMOTE_PATH'fileadmin'
+    - ssh $FILEADMIN_SYNC_SOURCE_HOST 'cd '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH' && tar --exclude=fileadmin/_processed_ -zcf fileadmin.tgz fileadmin'
     - scp $FILEADMIN_SYNC_SOURCE_HOST:$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz' .
     - tar -zxf fileadmin.tgz
     - ssh $FILEADMIN_SYNC_SOURCE_HOST 'rm -f '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz'
-    - rsync -az -e "ssh" --delete --exclude=_processed_ $WEBROOT_FOLDER'fileadmin' $SSH_HOST':'$SSH_REMOTE_PATH$WEBROOT_FOLDER'fileadmin'
+    - rsync -az -e "ssh" --delete --exclude=_processed_ fileadmin $SSH_HOST:$SSH_REMOTE_PATH

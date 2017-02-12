@@ -20,11 +20,11 @@ Include the following configuration in your root composer.json:
 		}
 	},
     "scripts": {
-        "copy-gitlab-ci": [
-            "cp vendor/smichaelsen/typo3-gitlab-ci/src/gitlab-ci.yml .gitlab-ci.yml"
+        "install-gitlab-ci": [
+            "vendor/smichaelsen/typo3-gitlab-ci/scripts/install.sh"
         ],
         "post-autoload-dump": [
-            "@copy-gitlab-ci"
+            "@install-gitlab-ci"
         ]
     }
 
@@ -76,3 +76,8 @@ You can prefix it with a branch name, e.g. `master_INSTALL_TOOL_PASSWORD` to mak
 
 If you want to sync the TYPO3 fileadmin directory between installations, set the `FILEADMIN_SYNC_SOURCE` to a certain
 branch name, e.g. *master*. That will be the installation that the fileadmin is synced from.
+
+## Building your extensions
+
+If you want to execute building on one or more of your extensions, take a look at the
+`gitlab-scripts/_build-extensions.sh` file that has been placed in your root directory.
