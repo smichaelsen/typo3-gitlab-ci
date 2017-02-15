@@ -17,6 +17,7 @@ composer:
     - export COMPOSER_CACHE_DIR=/cache/composer
   script:
     - ./composer install --no-dev --prefer-dist --optimize-autoloader
+    - rm -f Web/index.php
     - cp -R bin .Build/
     - cp -R vendor .Build/
     - cp -R Web .Build/
@@ -44,6 +45,7 @@ prepare_typo3:
   stage: build
   image: webdevops/php:ubuntu-16.04
   script:
+    - cp .Build/vendor/typo3/cms/index.php .Build/Web/index.php
     - cp .Build/vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php .Build/Web/typo3conf/
     - if [ -f .Build/Web/.htaccess.$CI_BUILD_REF_NAME ]; then cp .Build/Web/.htaccess.$CI_BUILD_REF_NAME .Build/Web/.htaccess ; fi
     - (rm -f .Build/Web/index.php || true) && cp .Build/vendor/typo3/cms/index.php .Build/Web/index.php
