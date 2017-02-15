@@ -72,6 +72,11 @@ If set it takes precedence over a `$GLOBALS['TYPO3_CONF_VARS']['BE']['installToo
  
 You can prefix it with a branch name, e.g. `master_INSTALL_TOOL_PASSWORD` to make the setting valid for a certain branch.
 
+## ImageMagick path
+
+If the ImageMagick path differs between your environments, you can also set it in `IM_PATH` and of course prefix it with
+a branch name, e.g. `master_IM_PATH` to make the setting valid for a certain branch. 
+
 ## fileadmin sync
 
 If you want to sync the TYPO3 fileadmin directory between installations, set the `FILEADMIN_SYNC_SOURCE` to a certain

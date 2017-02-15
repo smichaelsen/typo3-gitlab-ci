@@ -60,6 +60,8 @@ prepare_typo3:
     - echo $'DBPASS=\''"${!DBPASS_VARIABLE-`echo $DBPASS`}"$'\'' >> .Build/.env
     - DBHOST_VARIABLE=$BRANCH'_DBHOST'
     - echo $'DBHOST=\''"${!DBHOST_VARIABLE-`echo $DBHOST`}"$'\'' >> .Build/.env
+    - IM_PATH_VARIABLE=$BRANCH'_IM_PATH'
+    - echo $'IM_PATH=\''"${!IM_PATH_VARIABLE-`echo $IM_PATH`}"$'\'' >> .Build/.env
     - ENCRYPTION_KEY_VARIABLE=$BRANCH'_ENCRYPTION_KEY'
     - echo $'ENCRYPTION_KEY=\''"${!ENCRYPTION_KEY_VARIABLE-`echo $ENCRYPTION_KEY`}"$'\'' >> .Build/.env
     - INSTALL_TOOL_PASSWORD_VARIABLE=$BRANCH'_INSTALL_TOOL_PASSWORD'

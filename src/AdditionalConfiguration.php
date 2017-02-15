@@ -52,6 +52,11 @@ if (!empty(getenv('INSTALL_TOOL_PASSWORD'))) {
     $GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword'] = md5(getenv('INSTALL_TOOL_PASSWORD'));
 }
 
+if (!empty(getenv('IM_PATH'))) {
+    $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_path'] = getenv('IM_PATH');
+    $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_path_lzw'] = getenv('IM_PATH');
+}
+
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = sprintf(
     '[%s] %s',
     getenv('ENVNAME'),
