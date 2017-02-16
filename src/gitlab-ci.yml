@@ -107,6 +107,7 @@ deploy:
       --exclude=download
       --exclude=dynamicReturnTypeMeta.json
       --exclude=typo3conf/l10n
+      --exclude=typo3conf/LFEditor
       --exclude=.git
       --exclude=.gitignore
       --exclude=.gitlab-ci.yml
