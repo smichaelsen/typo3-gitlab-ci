@@ -158,4 +158,4 @@ sync:
     - scp $FILEADMIN_SYNC_SOURCE_HOST:$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz' .
     - tar -zxf fileadmin.tgz
     - ssh $FILEADMIN_SYNC_SOURCE_HOST 'rm -f '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz'
-    - rsync -az -e "ssh" --delete --exclude=_processed_ Web/fileadmin $SSH_HOST:$SSH_REMOTE_PATH'Web/'
+    - rsync -az -e "ssh" --exclude=_processed_ Web/fileadmin $SSH_HOST:$SSH_REMOTE_PATH'Web/'
