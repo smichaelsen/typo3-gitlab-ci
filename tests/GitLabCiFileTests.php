@@ -16,7 +16,7 @@ class GitLabCiFileTests extends TestCase
             'base_uri' => 'https://appzap.githost.io/api/v3/',
         ]);
         $data = json_encode([
-            'content' => file_get_contents(__DIR__ . '/../src/gitlab-ci.yml'),
+            'content' => file_get_contents(__DIR__ . '/../src/.gitlab-ci.yml.dist'),
         ]);
         $response = $client->request('POST', 'ci/lint', [
             'body' => $data,
