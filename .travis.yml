@@ -1,0 +1,26 @@
+language: php
+
+php:
+  - 7
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - parallel
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - composer self-update
+  - composer --version
+
+before_script:
+  - composer install
+
+script:
+  - bin/phpunit --bootstrap vendor/autoload.php tests/*
