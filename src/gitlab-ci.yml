@@ -65,6 +65,7 @@ prepare_typo3:
     - echo $'ENCRYPTION_KEY=\''"${!ENCRYPTION_KEY_VARIABLE-`echo $ENCRYPTION_KEY`}"$'\'' >> .Build/.env
     - INSTALL_TOOL_PASSWORD_VARIABLE=$BRANCH'_INSTALL_TOOL_PASSWORD'
     - echo $'INSTALL_TOOL_PASSWORD=\''"${!INSTALL_TOOL_PASSWORD_VARIABLE-`echo $INSTALL_TOOL_PASSWORD`}"$'\'' >> .Build/.env
+    - php .Build/bin/typo3cms install:generatepackagestates
   dependencies:
     - composer
   artifacts:
@@ -74,6 +75,7 @@ prepare_typo3:
       - .Build/Web/.htaccess
       - .Build/Web/index.php
       - .Build/Web/typo3conf/AdditionalConfiguration.php
+      - .Build/Web/typo3conf/PackageStates.php
 
 deploy:
   stage: deploy
@@ -122,7 +124,7 @@ deploy:
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
     - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'bin/typo3cms'
-    - ssh $SSH_HOST $TYPO3_CONSOLE' install:generatepackagestates && '$TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*"'
+    - ssh $SSH_HOST $TYPO3_CONSOLE' install:fixfolderstructure && '$TYPO3_CONSOLE' cache:flush && mkdir -p '$SSH_REMOTE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz && '$TYPO3_CONSOLE' database:updateschema "*"'
   artifacts:
     expire_in: 60 minutes
     paths:
@@ -158,4 +160,4 @@ sync:
     - scp $FILEADMIN_SYNC_SOURCE_HOST:$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz' .
     - tar -zxf fileadmin.tgz
     - ssh $FILEADMIN_SYNC_SOURCE_HOST 'rm -f '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz'
-    - rsync -az -e "ssh" --exclude=_processed_ Web/fileadmin $SSH_HOST:$SSH_REMOTE_PATH'Web/'
+    - rsync -az -e "ssh" --delete --exclude=_processed_ Web/fileadmin $SSH_HOST:$SSH_REMOTE_PATH'Web/'
