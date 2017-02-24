@@ -49,7 +49,7 @@ Set the following variables in your GitLab project to get a working deployment.
 | `FILEADMIN_SYNC_SOURCE` | :white_check_mark:          | Set to a certain branch name (e.g. `production`) from which you want to sync the fileadmin folder. E.g. `master_FILEADMIN_SYNC_SOURCE=production` will result in the fileadmin from `production` being synced to `master` on each deployment. | :x:                |
 
 
-:star: Prefixing a variable with a certain branch name will make the setting valid only for this branch. E.g. `master_DBPASS`
+:star: Prefixing a variable name with a certain branch name will make the setting valid only for this branch. E.g. `master_DBPASS`
 will only be valid for the `master` branch and will then take precedence over `DBPASS` if that is configured.  
 
 ## Custom Scripts
