@@ -63,6 +63,12 @@ You can invoke your own scripts at certain points of the deployment process. Aft
 a folder `gitlab-script/` in your root directory with script files prefixes with an underscore `_`. Remove the
 underscore to activate the file and fill it with your own commands.
 
+### `after-composer.sh`
+
+Will be executed in the `composer` job which loads all dependencies and then moves everything to the `.Build` folder
+that is needed in the next stages and will eventually be deployed. You can use this custom script to influence the
+contents of `.Build`.
+
 ### `build-extensions.sh`
 
 Will be executed in the `build_extensions` job. If your TYPO3 extensions need to be built before the deployment, you

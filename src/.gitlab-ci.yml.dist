@@ -21,6 +21,7 @@ composer:
     - cp -R bin .Build/
     - cp -R vendor .Build/
     - cp -R Web .Build/
+    - if [ -f ./gitlab-ci-scripts/after-composer.sh ]; then cd .Build && ../gitlab-ci-scripts/after-composer.sh && cd -; fi
   artifacts:
     # We grant 30 minutes here because the result has to survive the build stage and is used in the deploy stage
     expire_in: 30 minutes
@@ -121,6 +122,7 @@ deploy:
       --exclude=typo3temp
       --exclude=.sass-cache
       --exclude=uploads
+      --exclude=nginx.conf
       .Build/ $SSH_HOST:$SSH_REMOTE_PATH
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
