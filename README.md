@@ -4,6 +4,8 @@
 
 This package can help you to set up GitLab CI and TYPO3. Your TYPO3 installation has to be composer based.
 
+![Screenshot](doc/overview.png?raw=true "Screenshot")
+
 # Setup
 
 Include the following configuration in your root composer.json:
