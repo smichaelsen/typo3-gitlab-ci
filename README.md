@@ -11,7 +11,7 @@ This package can help you to set up deployment of your TYPO3 installation with G
 Include the following configuration in your root composer.json:
 
     "require": {
-    	"smichaelsen/typo3-gitlab-ci": "dev-master"
+    	"smichaelsen/typo3-gitlab-ci": "1.2.*"
     },
     "extra": {
 		"helhum/typo3-console": {
@@ -85,3 +85,8 @@ Hint: In your own scripts you have all your Gitlab CI variables available. So yo
 server like this:
 
     ssh $SSH_HOST "echo 'Hello from the target server!'"
+
+## Semantic versioning
+
+Starting with the release of version 1.2.0 this package will use semantic versioning. So you are encouraged to require
+the packages with `1.2.*`. Then you can expect receiving bugfix releases without new features or breaking changes.  
