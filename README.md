@@ -34,54 +34,23 @@ Include the following configuration in your root composer.json:
 
 Set the following variables in your GitLab project to get a working deployment.
 
-## SSH Connection
+| Variable Name           | prefixable with branch name :star: | Description                                                                                                                                                                                                                                   | Mandatory          |
+|-------------------------|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------|
+| `SSH_HOST`              | :white_check_mark:          | Hostname (IP or domain) of target server. Prepend it with ssh username like this: `username@hostname`                                                                                                                                         | :white_check_mark: |
+| `SSH_REMOTE_PATH`       | :white_check_mark:          | Path where on the target server the project should be deployed.                                                                                                                                                                               | :white_check_mark: |
+| `DBHOST`                | :white_check_mark:          | Database host                                                                                                                                                                                                                                 | :white_check_mark: |
+| `DBNAME`                | :white_check_mark:          | Database name                                                                                                                                                                                                                                 | :white_check_mark: |
+| `DBUSER`                | :white_check_mark:          | Database user                                                                                                                                                                                                                                 | :white_check_mark: |
+| `DBPASS`                | :white_check_mark:          | Database password                                                                                                                                                                                                                             | :white_check_mark: |
+| `ENCRYPTION_KEY`        | :white_check_mark:          | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']`.                                                                                                                                                                         | :x:                |
+| `INSTALL_TOOL_PASSWORD` | :white_check_mark:          | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword']`.                                                                                                                                                                    | :x:                |
+| `IM_PATH`               | :white_check_mark:          | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['GFX']['im_path']`.                                                                                                                                                                               | :x:                |
+| `PHP_BINARY`            | :white_check_mark:          | PHP binary that should be used to execute PHP cli scripts on the target server.                                                                                                                                                               | :x:                |
+| `FILEADMIN_SYNC_SOURCE` | :white_check_mark:          | Set to a certain branch name (e.g. `production`) from which you want to sync the fileadmin folder. E.g. `master_FILEADMIN_SYNC_SOURCE=production` will result in the fileadmin from `production` being synced to `master` on each deployment. | :x:                |
 
-Generate an SSH key pair and store the private key in `SSH_PRIVATE_KEY`. Add the public key to `.ssh/authorized_keys` on
-your target server(s).
 
-Set `SSH_HOST` to the hostname (IP or domain) of your target server. Prepend it with the ssh username like this:
-`username@hostname`. The deployment will be done to the `SSH_REMOTE_PATH`.
-
-`SSH_HOST` and `SSH_REMOTE_PATH` can be prefixed with a branch name, e.g. `master_SSH_HOST`
-to make the setting valid for a certain branch.
-
-## Database credentials
-
-Set `DBNAME`, `DBUSER`, `DBPASS` and `DBHOST`.
-
-You can prefix them with a branch name, e.g. `master_DBNAME` to make the setting valid for a certain branch.
-
-## PHP binary
-
-Set `PHP_BINARY` to the php binary path on the target server.
-
-You can prefix it with a branch name, e.g. `master_PHP_BINARY` to make the setting valid for a certain branch.
-
-## Encryption key
-
-You can set your TYPO3 encryption key in `ENCRYPTION_KEY`.
-If set it takes precedence over a `$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']` that might be set in your
-`LocalConfiguration.php`.
- 
-You can prefix it with a branch name, e.g. `master_ENCRYPTION_KEY` to make the setting valid for a certain branch.
-
-## Install Tool password
-
-You can set your TYPO3 install tool password in `INSTALL_TOOL_PASSWORD`.
-If set it takes precedence over a `$GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword']` that might be set in your
-`LocalConfiguration.php`.
- 
-You can prefix it with a branch name, e.g. `master_INSTALL_TOOL_PASSWORD` to make the setting valid for a certain branch.
-
-## ImageMagick path
-
-If the ImageMagick path differs between your environments, you can also set it in `IM_PATH` and of course prefix it with
-a branch name, e.g. `master_IM_PATH` to make the setting valid for a certain branch. 
-
-## fileadmin sync
-
-If you want to sync the TYPO3 fileadmin directory between installations, set the `FILEADMIN_SYNC_SOURCE` to a certain
-branch name, e.g. *master*. That will be the installation that the fileadmin is synced from.
+:star: Prefixing a variable with a certain branch name will make the setting valid only for this branch. E.g. `master_DBPASS`
+will only be valid for the `master` branch and will then take precedence over `DBPASS` if that is configured.  
 
 ## Custom Scripts
 
