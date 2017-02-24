@@ -99,6 +99,8 @@ deploy:
     - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
     - SSH_REMOTE_PATH=${!SSH_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}
 
+    - if [ -f ./gitlab-ci-scripts/pre-deploy.sh ]; then cd .Build && ../gitlab-ci-scripts/pre-deploy.sh && cd -; fi
+
     - >
       rsync -az -e "ssh" --delete
       --exclude=.htaccess.*
