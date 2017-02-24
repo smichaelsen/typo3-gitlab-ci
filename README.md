@@ -2,7 +2,7 @@
  
  [![Build Status](https://travis-ci.org/smichaelsen/typo3-gitlab-ci.svg?branch=master)](https://travis-ci.org/smichaelsen/typo3-gitlab-ci)
 
-This package can help you to set up GitLab CI and TYPO3. Your TYPO3 installation has to be composer based.
+This package can help you to set up deployment of your TYPO3 installation with GitLab CI. Your TYPO3 installation has to be composer based.
 
 ![Screenshot](doc/overview.png?raw=true "Screenshot")
 
