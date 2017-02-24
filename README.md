@@ -60,7 +60,7 @@ will only be valid for the `master` branch and will then take precedence over `D
 ## Custom Scripts
 
 You can invoke your own scripts at certain points of the deployment process. After installing this package you will find
-a folder `gitlab-script/` in your root directory with script files prefixes with an underscore `_`. Remove the
+a folder `gitlab-script/` in your root directory with script files prefixed with an underscore `_`. Remove the
 underscore to activate the file and fill it with your own commands.
 
 ### `after-composer.sh`
