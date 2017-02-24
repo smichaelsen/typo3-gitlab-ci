@@ -83,7 +83,25 @@ a branch name, e.g. `master_IM_PATH` to make the setting valid for a certain bra
 If you want to sync the TYPO3 fileadmin directory between installations, set the `FILEADMIN_SYNC_SOURCE` to a certain
 branch name, e.g. *master*. That will be the installation that the fileadmin is synced from.
 
-## Building your extensions
+## Custom Scripts
 
-If you want to execute building on one or more of your extensions, take a look at the
-`gitlab-scripts/_build-extensions.sh` file that has been placed in your root directory.
+You can invoke your own scripts at certain points of the deployment process. After installing this package you will find
+a folder `gitlab-script/` in your root directory with script files prefixes with an underscore `_`. Remove the
+underscore to activate the file and fill it with your own commands.
+
+### `build-extensions.sh`
+
+Will be executed in the `build_extensions` job. If your TYPO3 extensions need to be built before the deployment, you
+can do it here. This job is executed with the [node:6](https://hub.docker.com/_/node/) docker image, which means the
+machine is well prepared for node based frontend buildings (npm, grunt etc). But your script can also install other
+software you need.
+
+### `pre-deploy.sh`
+
+Will be executed in the `deploy` job, right before the code is actually transfered to the target server. Use this script
+to do last minute preparations on the target server.
+
+Hint: In your own scripts you have all your Gitlab CI variables available. So you can perform commands on the target
+server like this:
+
+    ssh $SSH_HOST "echo 'Hello from the target server!'"
