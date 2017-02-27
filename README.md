@@ -39,7 +39,8 @@ Set the following variables in your GitLab project to get a working deployment.
 | Variable Name           | prefixable with branch name :star: | Description                                                                                                                                                                                                                                   | Mandatory          |
 |-------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------|
 | `SSH_PRIVATE_KEY`       | :x:                                | Private SSH key :sparkles:                                                                                                                                                                                                                    | :white_check_mark: |
-| `SSH_HOST`              | :white_check_mark:                 | Hostname (IP or domain) of target server. Prepend it with ssh username like this: `username@hostname`                                                                                                                                         | :white_check_mark: |
+| `SSH_USERNAME`          | :white_check_mark:                 | User name for SSH connection                                                                                                                                                                                                                  | :white_check_mark: |
+| `SSH_HOST`              | :white_check_mark:                 | Hostname (IP or domain) of target server.                                                                                                                                                                                                     | :white_check_mark: |
 | `SSH_REMOTE_PATH`       | :white_check_mark:                 | Path where on the target server the project should be deployed.                                                                                                                                                                               | :white_check_mark: |
 | `DBHOST`                | :white_check_mark:                 | Database host                                                                                                                                                                                                                                 | :white_check_mark: |
 | `DBNAME`                | :white_check_mark:                 | Database name                                                                                                                                                                                                                                 | :white_check_mark: |
@@ -86,7 +87,13 @@ server like this:
 
     ssh $SSH_HOST "echo 'Hello from the target server!'"
 
-## Semantic versioning
+## Versions and updating
 
-Starting with the release of version 1.2.0 this package will use semantic versioning. So you are encouraged to require
+Starting with the release of version 1.2.0 this package will use [semantic versioning](http://semver.org/). So you are encouraged to require
 the packages with `1.2.*`. Then you can expect receiving bugfix releases without new features or breaking changes.  
+
+### 1.x to 2.x
+
+#### Breaking Changes:
+
+* 
