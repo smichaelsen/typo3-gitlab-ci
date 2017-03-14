@@ -11,7 +11,7 @@ This package can help you to set up deployment of your TYPO3 installation with G
 Include the following configuration in your root composer.json:
 
     "require": {
-    	"smichaelsen/typo3-gitlab-ci": "1.2.*"
+    	"smichaelsen/typo3-gitlab-ci": "2.0.*"
     },
     "extra": {
 		"helhum/typo3-console": {
@@ -87,7 +87,11 @@ server like this:
 
     ssh $SSH_HOST "echo 'Hello from the target server!'"
 
-## Semantic versioning
+## Versions and updating
 
-Starting with the release of version 1.2.0 this package will use semantic versioning. So you are encouraged to require
-the packages with `1.2.*`. Then you can expect receiving bugfix releases without new features or breaking changes.  
+Starting with the release of version 1.2.0 this package will use [semantic versioning](http://semver.org/). So you are encouraged to require
+the packages with `2.0.*`. Then you can expect receiving bugfix releases without new features or breaking changes.  
+
+### Breaking Changes when updating from 1.x to 2.x
+
+* Instead of providing *both* ssh user name *and* host in `SSH_HOST`, now there is a separate `SSH_USERNAME` variable.
