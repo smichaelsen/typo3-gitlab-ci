@@ -19,6 +19,7 @@ composer:
     - ./composer install --no-dev --prefer-dist --optimize-autoloader
     - rm -f Web/index.php
     - cp -R bin .Build/
+    - cp -R build .Build/
     - cp -R vendor .Build/
     - cp -R Web .Build/
     - if [ -f ./gitlab-ci-scripts/after-composer.sh ]; then cd .Build && ../gitlab-ci-scripts/after-composer.sh && cd -; fi
