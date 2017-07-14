@@ -18,10 +18,7 @@ composer:
   script:
     - ./composer install --no-dev --prefer-dist --optimize-autoloader
     - rm -f Web/index.php
-    - cp -R bin .Build/
-    - cp -R build .Build/
-    - cp -R vendor .Build/
-    - cp -R Web .Build/
+    - rsync -a ./ .Build/ --exclude=.git --exclude=.Build --exclude=.gitlab-ci.yml --exclude=composer.phar
     - if [ -f ./gitlab-ci-scripts/after-composer.sh ]; then cd .Build && ../gitlab-ci-scripts/after-composer.sh && cd -; fi
   artifacts:
     # We grant 30 minutes here because the result has to survive the build stage and is used in the deploy stage
