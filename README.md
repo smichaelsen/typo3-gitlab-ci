@@ -36,21 +36,20 @@ Include the following configuration in your root composer.json:
 
 Set the following variables in your GitLab project to get a working deployment.
 
-| Variable Name           | prefixable with branch name :star: | Description                                                                                                                                                                                                                                   | Mandatory          |
-|-------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------|
-| `SSH_PRIVATE_KEY`       | :x:                                | Private SSH key :sparkles:                                                                                                                                                                                                                    | :white_check_mark: |
-| `SSH_USERNAME`          | :white_check_mark:                 | User name for SSH connection                                                                                                                                                                                                                  | :white_check_mark: |
-| `SSH_HOST`              | :white_check_mark:                 | Hostname (IP or domain) of target server.                                                                                                                                                                                                     | :white_check_mark: |
-| `SSH_REMOTE_PATH`       | :white_check_mark:                 | Path where on the target server the project should be deployed.                                                                                                                                                                               | :white_check_mark: |
-| `DBHOST`                | :white_check_mark:                 | Database host                                                                                                                                                                                                                                 | :white_check_mark: |
-| `DBNAME`                | :white_check_mark:                 | Database name                                                                                                                                                                                                                                 | :white_check_mark: |
-| `DBUSER`                | :white_check_mark:                 | Database user                                                                                                                                                                                                                                 | :white_check_mark: |
-| `DBPASS`                | :white_check_mark:                 | Database password                                                                                                                                                                                                                             | :white_check_mark: |
-| `ENCRYPTION_KEY`        | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']`.                                                                                                                                                                         | :x:                |
-| `INSTALL_TOOL_PASSWORD` | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword']`.                                                                                                                                                                    | :x:                |
-| `IM_PATH`               | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['GFX']['im_path']`.                                                                                                                                                                               | :x:                |
-| `PHP_BINARY`            | :white_check_mark:                 | PHP binary that should be used to execute PHP cli scripts on the target server.                                                                                                                                                               | :x:                |
-| `FILEADMIN_SYNC_SOURCE` | :white_check_mark:                 | Set to a certain branch name (e.g. `production`) from which you want to sync the fileadmin folder. E.g. `master_FILEADMIN_SYNC_SOURCE=production` will result in the fileadmin from `production` being synced to `master` on each deployment. | :x:                |
+| Variable Name           | prefixable with branch name :star: | Description                                                                     | Mandatory          |
+|-------------------------|------------------------------------|---------------------------------------------------------------------------------|--------------------|
+| `SSH_PRIVATE_KEY`       | :x:                                | Private SSH key :sparkles:                                                      | :white_check_mark: |
+| `SSH_USERNAME`          | :white_check_mark:                 | User name for SSH connection                                                    | :white_check_mark: |
+| `SSH_HOST`              | :white_check_mark:                 | Hostname (IP or domain) of target server.                                       | :white_check_mark: |
+| `SSH_REMOTE_PATH`       | :white_check_mark:                 | Path where on the target server the project should be deployed.                 | :white_check_mark: |
+| `DBHOST`                | :white_check_mark:                 | Database host                                                                   | :white_check_mark: |
+| `DBNAME`                | :white_check_mark:                 | Database name                                                                   | :white_check_mark: |
+| `DBUSER`                | :white_check_mark:                 | Database user                                                                   | :white_check_mark: |
+| `DBPASS`                | :white_check_mark:                 | Database password                                                               | :white_check_mark: |
+| `ENCRYPTION_KEY`        | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']`.           | :x:                |
+| `INSTALL_TOOL_PASSWORD` | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword']`.      | :x:                |
+| `IM_PATH`               | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['GFX']['im_path']`.                 | :x:                |
+| `PHP_BINARY`            | :white_check_mark:                 | PHP binary that should be used to execute PHP cli scripts on the target server. | :x:                |
 
 
 :star: Prefixing a variable name with a certain branch name will make the setting valid only for this branch. E.g. `master_DBPASS`
@@ -90,8 +89,16 @@ server like this:
 ## Versions and updating
 
 Starting with the release of version 1.2.0 this package will use [semantic versioning](http://semver.org/). So you are encouraged to require
-the packages with `2.0.*`. Then you can expect receiving bugfix releases without new features or breaking changes.  
+the package with `^2.0.0`. Then you can expect receiving bugfix releases without new features or breaking changes.  
 
-### Breaking Changes when updating from 1.x to 2.x
+### Breaking Changes:
+ 
+#### 2.x to 3.x:
 
-* Instead of providing *both* ssh user name *and* host in `SSH_HOST`, now there is a separate `SSH_USERNAME` variable.
+* 384242e0d426a653b4e5e6d8ae6aa6d6cc2a0e64: The `.Build` folder is now built from all files excluding some certain files and directories (such as `.git`) instead of only copying a list of known files and directory. That can result in additional files landing in the `.Build` folder and being deploying eventually.
+* The fileadmin sync feature was removed as it was complex to setup and buggy. The pipeline runs fast now without the unnecessary stage.
+
+#### 1.x to 2.x:
+
+* Instead of providing *both* ssh user name *and* host in `SSH_HOST`, now there is a separate `SSH_USERNAME` variable. You have to set it to make sure your deployment works.
+

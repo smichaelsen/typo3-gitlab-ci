@@ -2,7 +2,6 @@ stages:
   - composer
   - build
   - deploy
-  - sync
 
 composer:
   stage: composer
@@ -133,39 +132,3 @@ deploy:
     expire_in: 60 minutes
     paths:
       - .Build
-
-sync:
-  stage: sync
-  image: webdevops/php:ubuntu-16.04
-  before_script:
-    - eval $(ssh-agent -s)
-    - ssh-add <(echo "$SSH_PRIVATE_KEY")
-    - mkdir -p ~/.ssh
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-  only:
-    - master
-  script:
-    - BRANCH=$CI_BUILD_REF_NAME
-    - echo "Syncing fileadmin..."
-    - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
-    - SSH_REMOTE_PATH="${!SSH_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}"
-    - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
-    - SSH_HOST="${!SSH_HOST_VARIABLE-`echo $SSH_HOST`}"
-    - SSH_USERNAME_VARIABLE=$BRANCH'_SSH_USERNAME'
-    - SSH_USERNAME="${!SSH_USERNAME_VARIABLE-`echo $SSH_USERNAME`}"
-    - FILEADMIN_SYNC_SOURCE_VARIABLE=$BRANCH'_FILEADMIN_SYNC_SOURCE'
-    - FILEADMIN_SYNC_SOURCE="${!FILEADMIN_SYNC_SOURCE_VARIABLE-`echo $FILEADMIN_SYNC_SOURCE`}"
-    - if [ -z "$FILEADMIN_SYNC_SOURCE" ]; then exit 0 ; fi
-    - if [ "$FILEADMIN_SYNC_SOURCE" == "$BRANCH" ]; then exit 0 ; fi
-    - FILEADMIN_SYNC_SOURCE_HOST_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_HOST'
-    - FILEADMIN_SYNC_SOURCE_HOST="${!FILEADMIN_SYNC_SOURCE_HOST_VARIABLE-`echo $SSH_HOST`}"
-    - FILEADMIN_SYNC_SOURCE_USERNAME_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_USERNAME'
-    - FILEADMIN_SYNC_SOURCE_USERNAME="${!FILEADMIN_SYNC_SOURCE_USERNAME_VARIABLE-`echo $FILEADMIN_SYNC_SOURCE_USERNAME`}"
-    - FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE=$FILEADMIN_SYNC_SOURCE'_SSH_REMOTE_PATH'
-    - FILEADMIN_SYNC_SOURCE_REMOTE_PATH="${!FILEADMIN_SYNC_SOURCE_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}"
-    - echo 'Sync from host '$FILEADMIN_SYNC_SOURCE_USERNAME@$FILEADMIN_SYNC_SOURCE_HOST':'$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'Web/fileadmin to '$SSH_USERNAME@$SSH_HOST':'$SSH_REMOTE_PATH'Web/fileadmin'
-    - ssh $FILEADMIN_SYNC_SOURCE_USERNAME@$FILEADMIN_SYNC_SOURCE_HOST 'cd '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH' && tar --exclude=fileadmin/_processed_ -zcf fileadmin.tgz Web/fileadmin'
-    - scp $FILEADMIN_SYNC_SOURCE_USERNAME@$FILEADMIN_SYNC_SOURCE_HOST:$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz' .
-    - ssh $FILEADMIN_SYNC_SOURCE_USERNAME@$FILEADMIN_SYNC_SOURCE_HOST 'rm -f '$FILEADMIN_SYNC_SOURCE_REMOTE_PATH'fileadmin.tgz'
-    - tar -zxf fileadmin.tgz
-    - rsync -az -e "ssh" --delete --exclude=_processed_ Web/fileadmin $SSH_USERNAME@$SSH_HOST:$SSH_REMOTE_PATH'Web/'
