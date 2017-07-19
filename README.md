@@ -11,18 +11,18 @@ This package can help you to set up deployment of your TYPO3 installation with G
 Include the following configuration in your root composer.json:
 
     "require": {
-    	"smichaelsen/typo3-gitlab-ci": "2.0.*"
+        "smichaelsen/typo3-gitlab-ci": "^2.0.0"
     },
     "extra": {
-		"helhum/typo3-console": {
-			"install-binary": false,
-			"install-extension-dummy": false
-		},
-		"typo3/cms": {
-			"cms-package-dir": "{$vendor-dir}/typo3/cms",
-			"web-dir": "Web"
-		}
-	},
+        "helhum/typo3-console": {
+            "install-binary": false,
+            "install-extension-dummy": false
+        },
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": "Web"
+        }
+    },
     "scripts": {
         "install-gitlab-ci": [
             "vendor/smichaelsen/typo3-gitlab-ci/scripts/install.sh"
@@ -50,7 +50,6 @@ Set the following variables in your GitLab project to get a working deployment.
 | `INSTALL_TOOL_PASSWORD` | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword']`.      | :x:                |
 | `IM_PATH`               | :white_check_mark:                 | Overwrites the `$GLOBALS['TYPO3_CONF_VARS']['GFX']['im_path']`.                 | :x:                |
 | `PHP_BINARY`            | :white_check_mark:                 | PHP binary that should be used to execute PHP cli scripts on the target server. | :x:                |
-
 
 :star: Prefixing a variable name with a certain branch name will make the setting valid only for this branch. E.g. `master_DBPASS`
 will only be valid for the `master` branch and will then take precedence over `DBPASS` if that is configured.
@@ -95,10 +94,10 @@ the package with `^2.0.0`. Then you can expect receiving bugfix releases without
  
 #### 2.x to 3.x:
 
-* 384242e0d426a653b4e5e6d8ae6aa6d6cc2a0e64: The `.Build` folder is now built from all files excluding some certain files and directories (such as `.git`) instead of only copying a list of known files and directory. That can result in additional files landing in the `.Build` folder and being deploying eventually.
-* The fileadmin sync feature was removed as it was complex to setup and buggy. The pipeline runs fast now without the unnecessary stage.
+* [384242e0](https://github.com/smichaelsen/typo3-gitlab-ci/commit/384242e0d426a653b4e5e6d8ae6aa6d6cc2a0e64): The `.Build` folder is now built from all files excluding some certain files and directories (such as `.git`) instead of only copying a list of known files and directory. That can result in additional files landing in the `.Build` folder and being deploying eventually.
+* [a6a12ee3](https://github.com/smichaelsen/typo3-gitlab-ci/commit/a6a12ee3278e6da42b83b023f439fa51ed8645f6): The fileadmin sync feature was removed as it was complex to setup and buggy. The pipeline runs fast now without the unnecessary stage.
+* The [TYPO3 console](https://github.com/TYPO3-Console/TYPO3-Console) now additonally executes `extension:setupactive` and `upgrade:all`. Please check if that is desired for your project. 
 
 #### 1.x to 2.x:
 
 * Instead of providing *both* ssh user name *and* host in `SSH_HOST`, now there is a separate `SSH_USERNAME` variable. You have to set it to make sure your deployment works.
-
