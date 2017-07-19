@@ -88,7 +88,7 @@ server like this:
 ## Versions and updating
 
 Starting with the release of version 1.2.0 this package will use [semantic versioning](http://semver.org/). So you are encouraged to require
-the package with `^2.0.0`. Then you can expect receiving bugfix releases without new features or breaking changes.  
+the package with `^2.0.0`. Then you can expect receiving bugfix releases without breaking changes.  
 
 ### Breaking Changes:
  
@@ -96,7 +96,7 @@ the package with `^2.0.0`. Then you can expect receiving bugfix releases without
 
 * [384242e0](https://github.com/smichaelsen/typo3-gitlab-ci/commit/384242e0d426a653b4e5e6d8ae6aa6d6cc2a0e64): The `.Build` folder is now built from all files excluding some certain files and directories (such as `.git`) instead of only copying a list of known files and directory. That can result in additional files landing in the `.Build` folder and being deploying eventually.
 * [a6a12ee3](https://github.com/smichaelsen/typo3-gitlab-ci/commit/a6a12ee3278e6da42b83b023f439fa51ed8645f6): The fileadmin sync feature was removed as it was complex to setup and buggy. The pipeline runs fast now without the unnecessary stage.
-* The [TYPO3 console](https://github.com/TYPO3-Console/TYPO3-Console) now additonally executes `extension:setupactive` and `upgrade:all`. Please check if that is desired for your project. 
+* [ff869f95](https://github.com/smichaelsen/typo3-gitlab-ci/commit/ff869f9552ebdf281f32eaaa402ce9f3575846f9) The [TYPO3 console](https://github.com/TYPO3-Console/TYPO3-Console) now additonally executes `extension:setupactive` and `upgrade:all`. Please check if that is desired for your project. 
 
 #### 1.x to 2.x:
 
