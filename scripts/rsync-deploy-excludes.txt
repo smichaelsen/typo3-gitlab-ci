@@ -1,0 +1,2 @@
+# Rename this file to rsync-deploy-excludes.txt and list files and directories in here that you used in the CI process but don't want to deploy onto the target server.
+# It's good practice and improves security to only ship to the production server what is really needed to run then website.

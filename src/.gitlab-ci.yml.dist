@@ -20,7 +20,18 @@ composer:
   script:
     - ./composer.phar install --no-dev --prefer-dist --optimize-autoloader
     - rm -f Web/index.php
-    - rsync -a ./ .Build/ --exclude=.git --exclude=.Build --exclude=.gitlab-ci.yml --exclude=composer.phar
+    - touch gitlab-ci-scripts/rsync-build-excludes.txt
+    - >
+      rsync -a ./ .Build/
+      --exclude=/.Build
+      --exclude=/.git
+      --exclude=/.editorconfig
+      --exclude=/.gitlab-ci.yml
+      --exclude=/composer.json
+      --exclude=/composer.lock
+      --exclude=/composer.phar
+      --exclude=/dynamicReturnTypeMeta.json
+      --exclude-from=gitlab-ci-scripts/rsync-build-excludes.txt
     - if [ -f ./gitlab-ci-scripts/after-composer.sh ]; then cd .Build && ../gitlab-ci-scripts/after-composer.sh && cd -; fi
   artifacts:
     expire_in: 60 minutes
@@ -103,38 +114,32 @@ deploy:
 
     - if [ -f ./gitlab-ci-scripts/pre-deploy.sh ]; then cd .Build && ../gitlab-ci-scripts/pre-deploy.sh && cd -; fi
 
+    - touch gitlab-ci-scripts/rsync-deploy-excludes.txt
     - >
       rsync -az -e "ssh" --delete
-      --exclude=.htaccess.*
-      --exclude=.editorconfig
-      --exclude=composer.json
-      --exclude=composer.lock
-      --exclude=fileadmin
-      --exclude=download
-      --exclude=dynamicReturnTypeMeta.json
-      --exclude=typo3conf/l10n
-      --exclude=typo3conf/LFEditor
+      --exclude=/backups
+      --exclude=/gitlab-ci-scripts
+      --exclude=/Web/.htaccess.*
+      --exclude=/Web/fileadmin
+      --exclude=/Web/typo3conf/l10n
+      --exclude=/Web/typo3temp
+      --exclude=/Web/uploads
       --exclude=.git
+      --exclude=.gitattributes
       --exclude=.gitignore
-      --exclude=.gitlab-ci.yml
       --exclude=*.md
-      --exclude=node_modules
-      --exclude=bower_components
-      --exclude=typo3temp
-      --exclude=.sass-cache
-      --exclude=uploads
-      --exclude=nginx.conf
+      --exclude-from=gitlab-ci-scripts/rsync-deploy-excludes.txt
       .Build/ $SSH_USERNAME@$SSH_HOST:$SSH_REMOTE_PATH
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
     - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'bin/typo3cms'
     - >
-      ssh $SSH_USERNAME@$SSH_HOST
-      $TYPO3_CONSOLE' install:fixfolderstructure &&
-      '$TYPO3_CONSOLE' cache:flush --force &&
-      mkdir -p '$SSH_REMOTE_PATH'/backups/databases &&
-      '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz &&
-      '$TYPO3_CONSOLE' extension:setupactive &&
-      '$TYPO3_CONSOLE' database:updateschema "*" &&
-      '$TYPO3_CONSOLE' upgrade:all'
+        ssh $SSH_USERNAME@$SSH_HOST
+        $TYPO3_CONSOLE' install:fixfolderstructure &&
+        '$TYPO3_CONSOLE' cache:flush --force &&
+        mkdir -p '$SSH_REMOTE_PATH'/backups/databases &&
+        '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz &&
+        '$TYPO3_CONSOLE' extension:setupactive &&
+        '$TYPO3_CONSOLE' database:updateschema "*" &&
+        '$TYPO3_CONSOLE' upgrade:all'

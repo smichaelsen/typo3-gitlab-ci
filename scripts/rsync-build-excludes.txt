@@ -1,0 +1,2 @@
+# Rename this file to rsync-build-excludes.txt and list files and directories in here that you want to exclude from your whole CI process
+# This speeds up your CI process and lowers disk usage on the runner server

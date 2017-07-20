@@ -56,10 +56,10 @@ will only be valid for the `master` branch and will then take precedence over `D
   
 :sparkles: Generate an SSH key pair and store the private key in `SSH_PRIVATE_KEY`. Add the public key to `.ssh/authorized_keys` on your target server(s). Additionally add the public key as "Deploy Key" to private repositories that you need to load (e.g. via composer).
 
-## Custom Scripts
+## Custom Scripts and configuration
 
 You can invoke your own scripts at certain points of the deployment process. After installing this package you will find
-a folder `gitlab-script/` in your root directory with script files prefixed with an underscore `_`. Remove the
+a folder `gitlab-script/` in your root directory with files prefixed with an underscore `_`. Remove the
 underscore to activate the file and fill it with your own commands.
 
 ### `after-composer.sh`
@@ -84,6 +84,17 @@ Hint: In your own scripts you have all your Gitlab CI variables available. So yo
 server like this:
 
     ssh $SSH_HOST "echo 'Hello from the target server!'"
+    
+### `rsync-build-excludes.txt`
+
+List files and directories in here that you want to exclude from your whole CI process. This speeds up your CI process
+and lowers disk usage on the runner server. List one file / directory pattern per line.
+
+### `rsync-deploy-excludes.txt`
+
+List files and directories in here that you used in the CI process but don't want to deploy onto the target server.
+It's good practice and improves security to only ship to the production server what is really needed to run then website.
+List one file / directory pattern per line.
 
 ## Versions and updating
 
@@ -96,7 +107,8 @@ the package with `^2.0.0`. Then you can expect receiving bugfix releases without
 
 * [384242e0](https://github.com/smichaelsen/typo3-gitlab-ci/commit/384242e0d426a653b4e5e6d8ae6aa6d6cc2a0e64): The `.Build` folder is now built from all files excluding some certain files and directories (such as `.git`) instead of only copying a list of known files and directory. That can result in additional files landing in the `.Build` folder and being deploying eventually.
 * [a6a12ee3](https://github.com/smichaelsen/typo3-gitlab-ci/commit/a6a12ee3278e6da42b83b023f439fa51ed8645f6): The fileadmin sync feature was removed as it was complex to setup and buggy. The pipeline runs faster now without the unnecessary stage.
-* [ff869f95](https://github.com/smichaelsen/typo3-gitlab-ci/commit/ff869f9552ebdf281f32eaaa402ce9f3575846f9): The [TYPO3 console](https://github.com/TYPO3-Console/TYPO3-Console) now additonally executes `extension:setupactive` and `upgrade:all`. Please check if that is desired for your project. 
+* [ff869f95](https://github.com/smichaelsen/typo3-gitlab-ci/commit/ff869f9552ebdf281f32eaaa402ce9f3575846f9): The [TYPO3 console](https://github.com/TYPO3-Console/TYPO3-Console) now additonally executes `extension:setupactive` and `upgrade:all`. Please check if that is desired for your project.
+* latest: `download` and `typo3conf/LFEditor` are not excluded from deployment anymore, because they are very project specific. If you rely on them not being rsynced, add them to `gitlab-ci-scripts/rsync-deploy-excludes.txt`  
 
 #### 1.x to 2.x:
 
