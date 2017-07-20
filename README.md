@@ -71,7 +71,7 @@ contents of `.Build`.
 ### `build-extensions.sh`
 
 Will be executed in the `build_extensions` job. If your TYPO3 extensions need to be built before the deployment, you
-can do it here. This job is executed with the [node:7](https://hub.docker.com/_/node/) docker image, which means the
+can do it here. This job is executed with the [node:8](https://hub.docker.com/_/node/) docker image, which means the
 machine is well prepared for node based frontend buildings (npm, grunt etc). But your script can also install other
 software you need.
 
@@ -103,6 +103,10 @@ the package with `^3.0.0`. Then you can expect receiving bugfix releases without
 
 ### Breaking Changes:
  
+#### 3.x to 4.x:
+
+* latest: The `build_extensions` job is now executed with a node 8 image instead of node 7. Make sure your frontend building works based on node 8.
+
 #### 2.x to 3.x:
 
 * [384242e0](https://github.com/smichaelsen/typo3-gitlab-ci/commit/384242e0d426a653b4e5e6d8ae6aa6d6cc2a0e64): The `.Build` folder is now built from all files excluding some certain files and directories (such as `.git`) instead of only copying a list of known files and directory. That can result in additional files landing in the `.Build` folder and being deploying eventually. Use the new `gitlab-ci-scripts/rsync-build-excludes.txt` to define additional excludes. 
