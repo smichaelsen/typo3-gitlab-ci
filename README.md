@@ -11,7 +11,7 @@ This package can help you to set up deployment of your TYPO3 installation with G
 Include the following configuration in your root composer.json:
 
     "require": {
-        "smichaelsen/typo3-gitlab-ci": "^2.0.0"
+        "smichaelsen/typo3-gitlab-ci": "^3.0.0"
     },
     "extra": {
         "helhum/typo3-console": {
@@ -71,7 +71,7 @@ contents of `.Build`.
 ### `build-extensions.sh`
 
 Will be executed in the `build_extensions` job. If your TYPO3 extensions need to be built before the deployment, you
-can do it here. This job is executed with the [node:6](https://hub.docker.com/_/node/) docker image, which means the
+can do it here. This job is executed with the [node:7](https://hub.docker.com/_/node/) docker image, which means the
 machine is well prepared for node based frontend buildings (npm, grunt etc). But your script can also install other
 software you need.
 
@@ -99,7 +99,7 @@ List one file / directory pattern per line.
 ## Versions and updating
 
 Starting with the release of version 1.2.0 this package will use [semantic versioning](http://semver.org/). So you are encouraged to require
-the package with `^2.0.0`. Then you can expect receiving bugfix releases without breaking changes.  
+the package with `^3.0.0`. Then you can expect receiving bugfix releases without breaking changes.  
 
 ### Breaking Changes:
  
