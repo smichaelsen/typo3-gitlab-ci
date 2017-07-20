@@ -23,8 +23,7 @@ composer:
     - rsync -a ./ .Build/ --exclude=.git --exclude=.Build --exclude=.gitlab-ci.yml --exclude=composer.phar
     - if [ -f ./gitlab-ci-scripts/after-composer.sh ]; then cd .Build && ../gitlab-ci-scripts/after-composer.sh && cd -; fi
   artifacts:
-    # We grant 30 minutes here because the result has to survive the build stage and is used in the deploy stage
-    expire_in: 30 minutes
+    expire_in: 60 minutes
     paths:
       - .Build
 
@@ -38,7 +37,7 @@ build_extensions:
   script:
     - if [ -f ./gitlab-ci-scripts/build-extensions.sh ]; then cd .Build && ../gitlab-ci-scripts/build-extensions.sh && cd -; fi
   artifacts:
-    expire_in: 20 minutes
+    expire_in: 60 minutes
     paths:
       - .Build/Web/typo3conf/ext
 
@@ -70,7 +69,7 @@ prepare_typo3:
   dependencies:
     - composer
   artifacts:
-    expire_in: 20 minutes
+    expire_in: 60 minutes
     paths:
       - .Build/.env
       - .Build/Web/.htaccess
@@ -139,7 +138,3 @@ deploy:
       '$TYPO3_CONSOLE' extension:setupactive &&
       '$TYPO3_CONSOLE' database:updateschema "*" &&
       '$TYPO3_CONSOLE' upgrade:all'
-  artifacts:
-    expire_in: 60 minutes
-    paths:
-      - .Build
