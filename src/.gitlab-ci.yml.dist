@@ -12,10 +12,13 @@ composer:
     - mkdir -p ~/.ssh
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - mkdir .Build
-    - curl -sS https://getcomposer.org/installer | php -- --install-dir=./ --filename=composer
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=./ --filename=composer.phar
+    - export COMPOSER_ALLOW_SUPERUSER=1
     - export COMPOSER_CACHE_DIR=/cache/composer
+    - export COMPOSER_MIRROR_PATH_REPOS=1
+    - export COMPOSER_NO_INTERACTION=1
   script:
-    - ./composer install --no-dev --prefer-dist --optimize-autoloader
+    - ./composer.phar install --no-dev --prefer-dist --optimize-autoloader
     - rm -f Web/index.php
     - rsync -a ./ .Build/ --exclude=.git --exclude=.Build --exclude=.gitlab-ci.yml --exclude=composer.phar
     - if [ -f ./gitlab-ci-scripts/after-composer.sh ]; then cd .Build && ../gitlab-ci-scripts/after-composer.sh && cd -; fi
