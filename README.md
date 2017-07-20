@@ -108,7 +108,8 @@ the package with `^2.0.0`. Then you can expect receiving bugfix releases without
 * [384242e0](https://github.com/smichaelsen/typo3-gitlab-ci/commit/384242e0d426a653b4e5e6d8ae6aa6d6cc2a0e64): The `.Build` folder is now built from all files excluding some certain files and directories (such as `.git`) instead of only copying a list of known files and directory. That can result in additional files landing in the `.Build` folder and being deploying eventually.
 * [a6a12ee3](https://github.com/smichaelsen/typo3-gitlab-ci/commit/a6a12ee3278e6da42b83b023f439fa51ed8645f6): The fileadmin sync feature was removed as it was complex to setup and buggy. The pipeline runs faster now without the unnecessary stage.
 * [ff869f95](https://github.com/smichaelsen/typo3-gitlab-ci/commit/ff869f9552ebdf281f32eaaa402ce9f3575846f9): The [TYPO3 console](https://github.com/TYPO3-Console/TYPO3-Console) now additonally executes `extension:setupactive` and `upgrade:all`. Please check if that is desired for your project.
-* latest: `download` and `typo3conf/LFEditor` are not excluded from deployment anymore, because they are very project specific. If you rely on them not being rsynced, add them to `gitlab-ci-scripts/rsync-deploy-excludes.txt`  
+* [055f641c](https://github.com/smichaelsen/typo3-gitlab-ci/commit/055f641c5d15226149dc8334a674a653ee66f7ea): `download` and `typo3conf/LFEditor` are not excluded from deployment anymore, because they are very project specific. If you rely on them not being rsynced, add them to `gitlab-ci-scripts/rsync-deploy-excludes.txt`
+* latest: The `build_extensions` job is now executed with a node 7 image instead of node 6. Make sure your frontend building works based on node 7. 
 
 #### 1.x to 2.x:
 

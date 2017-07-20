@@ -40,7 +40,7 @@ composer:
 
 build_extensions:
   stage: build
-  image: node:6
+  image: node:7
   variables:
     NODE_ENV: production
   dependencies:
