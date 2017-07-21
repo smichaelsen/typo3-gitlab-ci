@@ -1,16 +1,13 @@
 {
     "name": "smichaelsen/typo3-gitlab-ci",
-	"config": {
-		"bin-dir": "bin"
-	},
 	"require": {
 		"typo3/cms": "^7.6 || ^8.7",
 		"helhum/typo3-console": "^4.6.5",
 		"vlucas/phpdotenv": "^2.4.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "*",
-		"guzzlehttp/guzzle": "~6.0"
+		"phpunit/phpunit": "^6.2.3",
+		"guzzlehttp/guzzle": "^6.3.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -21,12 +18,11 @@
 		"branch-alias": {
 			"dev-master": "4.x-dev"
 		},
-		"helhum/typo3-console": {
-			"install-binary": false,
-			"install-extension-dummy": false
-		},
 		"typo3/cms": {
 			"cms-package-dir": "{$vendor-dir}/typo3/cms"
+		},
+		"helhum/typo3-console": {
+			"install-extension-dummy": false
 		}
 	}
 }
