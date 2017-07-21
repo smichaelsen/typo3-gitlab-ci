@@ -1,22 +1,5 @@
 <?php
 
-if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['dotenvPath'])) {
-    $dotenvPath = PATH_site . $GLOBALS['TYPO3_CONF_VARS']['EXT']['dotenvPath'];
-} else {
-    $dotenvPath = __DIR__ . '/../..';
-}
-
-$dotenv = new Dotenv\Dotenv($dotenvPath);
-$dotenv->load();
-
-$dotenv->required([
-    'DBNAME',
-    'DBPASS',
-    'DBUSER',
-    'DBHOST',
-    'ENVNAME',
-]);
-
 if ((int) TYPO3_branch[0] === 7) {
     $dbConfig = [
         'database' => getenv('DBNAME'),
