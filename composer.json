@@ -5,8 +5,8 @@
 	},
 	"require": {
 		"typo3/cms": "^7.6 || ^8.7",
-		"helhum/typo3-console": "4.*",
-		"vlucas/phpdotenv": "2.*"
+		"helhum/typo3-console": "^4.6.5",
+		"vlucas/phpdotenv": "^2.4.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "*",
