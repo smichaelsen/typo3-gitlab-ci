@@ -105,12 +105,13 @@ deploy:
     - BRANCH=$CI_BUILD_REF_NAME
     - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
     - SSH_HOST="${!SSH_HOST_VARIABLE-`echo $SSH_HOST`}"
-    - if [ -z "$SSH_HOST" ]; then echo $BRANCH' is not deployed because there is no variable '$SSH_HOST' configured.' && exit 0; fi
+    - if [ -z "$SSH_HOST" ]; then echo $BRANCH' is not deployed because there is no SSH_HOST variable configured.' && exit 0; fi
     - SSH_USERNAME_VARIABLE=$BRANCH'_SSH_USERNAME'
     - SSH_USERNAME="${!SSH_USERNAME_VARIABLE-`echo $SSH_USERNAME`}"
 
     - SSH_REMOTE_PATH_VARIABLE=$BRANCH'_SSH_REMOTE_PATH'
     - SSH_REMOTE_PATH=${!SSH_REMOTE_PATH_VARIABLE-`echo $SSH_REMOTE_PATH`}
+    - if [ -z "$SSH_REMOTE_PATH" ]; then echo $BRANCH' is not deployed because there is no SSH_REMOTE_PATH variable configured.' && exit 0; fi
 
     - if [ -f ./gitlab-ci-scripts/pre-deploy.sh ]; then cd .Build && ../gitlab-ci-scripts/pre-deploy.sh && cd -; fi
 
