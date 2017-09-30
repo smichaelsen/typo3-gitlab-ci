@@ -105,7 +105,7 @@ the package with `^3.0.0`. Then you can expect receiving bugfix releases without
  
 #### 3.x to 4.x:
 
-* latest: The `build_extensions` job is now executed with a node 8 image instead of node 7. Make sure your frontend building works based on node 8.
+* [dbdf3ba2](https://github.com/smichaelsen/typo3-gitlab-ci/commit/dbdf3ba200d94034c4b8aa4c061a6754ac3ac639): The `build_extensions` job is now executed with a node 8 image instead of node 7. Make sure your frontend building works based on node 8.
 
 #### 2.x to 3.x:
 
