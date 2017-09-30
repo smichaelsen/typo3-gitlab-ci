@@ -105,6 +105,7 @@ the package with `^3.0.0`. Then you can expect receiving bugfix releases without
  
 #### 3.x to 4.x:
 
+* latest: The web directory was renamed from `Web` to lowercase `web`. Be sure to set `"web-dir": "web"` in your `composer.json` (see above at "Setup"). Also be sure your web server host config points to the lower case directory. On case insensitive file systems (like macOS) you will have to rename your directory manually. 
 * [dbdf3ba2](https://github.com/smichaelsen/typo3-gitlab-ci/commit/dbdf3ba200d94034c4b8aa4c061a6754ac3ac639): The `build_extensions` job is now executed with a node 8 image instead of node 7. Make sure your frontend building works based on node 8.
 
 #### 2.x to 3.x:
