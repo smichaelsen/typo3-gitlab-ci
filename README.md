@@ -20,7 +20,7 @@ Include the following configuration in your root composer.json:
         },
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": "Web"
+            "web-dir": "web"
         }
     },
     "scripts": {
