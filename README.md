@@ -83,7 +83,7 @@ to do last minute preparations on the target server.
 Hint: In your own scripts you have all your Gitlab CI variables available. So you can perform commands on the target
 server like this:
 
-    ssh $SSH_HOST "echo 'Hello from the target server!'"
+    ssh $SSH_USERNAME@$SSH_HOST "echo 'Hello from the target server!'"
     
 ### `rsync-build-excludes.txt`
 
@@ -98,11 +98,11 @@ List one file / directory pattern per line.
 
 ## Versions and updating
 
-Starting with the release of version 1.2.0 this package will use [semantic versioning](http://semver.org/). So you are encouraged to require
+This package uses [semantic versioning](http://semver.org/). So you are encouraged to require
 the package with `^4.0.0`. Then you can expect receiving bugfix releases and improvements without breaking changes.  
 
 ### Breaking Changes:
- 
+
 #### 3.x to 4.x:
 
 * [88a6e934](https://github.com/smichaelsen/typo3-gitlab-ci/commit/88a6e934d5256e0a76247734266abd42c5c3dabc): PHP is now required in version 7.0
