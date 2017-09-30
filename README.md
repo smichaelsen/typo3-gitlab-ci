@@ -11,7 +11,7 @@ This package can help you to set up deployment of your TYPO3 installation with G
 Include the following configuration in your root composer.json:
 
     "require": {
-        "smichaelsen/typo3-gitlab-ci": "^3.0.0"
+        "smichaelsen/typo3-gitlab-ci": "^4.0.0"
     },
     "extra": {
         "helhum/typo3-console": {
@@ -99,13 +99,14 @@ List one file / directory pattern per line.
 ## Versions and updating
 
 Starting with the release of version 1.2.0 this package will use [semantic versioning](http://semver.org/). So you are encouraged to require
-the package with `^3.0.0`. Then you can expect receiving bugfix releases without breaking changes.  
+the package with `^4.0.0`. Then you can expect receiving bugfix releases and improvements without breaking changes.  
 
 ### Breaking Changes:
  
 #### 3.x to 4.x:
 
-* latest: The web directory was renamed from `Web` to lowercase `web`. Be sure to set `"web-dir": "web"` in your `composer.json` (see above at "Setup"). Also be sure your web server host config points to the lower case directory. On case insensitive file systems (like macOS) you will have to rename your directory manually. 
+* [88a6e934](https://github.com/smichaelsen/typo3-gitlab-ci/commit/88a6e934d5256e0a76247734266abd42c5c3dabc): PHP is now required in version 7.0
+* [1c8d9c70](https://github.com/smichaelsen/typo3-gitlab-ci/commit/1c8d9c70b73f15f014cc9d24552def230ecfb724): The web directory was renamed from `Web` to lowercase `web`. Be sure to set `"web-dir": "web"` in your `composer.json` (see above at "Setup"). Also be sure your web server host config points to the lower case directory. On case insensitive file systems (like macOS) you will have to rename your directory manually. 
 * [dbdf3ba2](https://github.com/smichaelsen/typo3-gitlab-ci/commit/dbdf3ba200d94034c4b8aa4c061a6754ac3ac639): The `build_extensions` job is now executed with a node 8 image instead of node 7. Make sure your frontend building works based on node 8.
 
 #### 2.x to 3.x:
