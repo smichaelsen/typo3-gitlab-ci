@@ -25,7 +25,7 @@ Include the following configuration in your root composer.json:
     },
     "scripts": {
         "install-gitlab-ci": [
-            "vendor/smichaelsen/typo3-gitlab-ci/scripts/install.sh"
+            "{$vendor-dir}/smichaelsen/typo3-gitlab-ci/scripts/install.sh"
         ],
         "post-autoload-dump": [
             "@install-gitlab-ci"
