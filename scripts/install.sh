@@ -1,5 +1,9 @@
 #!/bin/bash
 [ -d gitlab-ci-scripts ] || mkdir gitlab-ci-scripts
+if [ ! -f web/typo3conf/AdditionalConfiguration.php ]; then
+    cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php web/typo3conf/
+fi
+cp vendor/smichaelsen/typo3-gitlab-ci/src/.env.example .env
 cp vendor/smichaelsen/typo3-gitlab-ci/src/.gitlab-ci.yml.dist .gitlab-ci.yml
 cp vendor/smichaelsen/typo3-gitlab-ci/scripts/after-composer.sh gitlab-ci-scripts/_after-composer.sh
 cp vendor/smichaelsen/typo3-gitlab-ci/scripts/build-extensions.sh gitlab-ci-scripts/_build-extensions.sh

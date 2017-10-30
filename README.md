@@ -31,6 +31,16 @@ Include the following configuration in your root composer.json:
             "@install-gitlab-ci"
         ]
     }
+    
+Run `composer update` to install everything.
+You'll find a `.env.example` in your root directory. Copy it to `.env`, add it to `.gitignore` and populate it with the settings for your local TYPO3 installation.
+
+If previously there was no `typo3conf/AdditionalConfiguration.php` there will be one after installing this package that will take care of loading the settings from `.env`.
+If you have a custom `typo3conf/AdditionalConfiguration.php` already, just include the following line at the beginning of the file:
+
+````
+(new \Smichaelsen\Typo3GitlabCi\ConfigLoader())->populate();
+````
 
 # GitLab variables
 
