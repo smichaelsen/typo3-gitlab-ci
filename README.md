@@ -42,6 +42,20 @@ If you have a custom `typo3conf/AdditionalConfiguration.php` already, just inclu
 (new \Smichaelsen\Typo3GitlabCi\ConfigLoader())->populate();
 ````
 
+# Experimental: Setup a fresh installation with [helhum/minimal-typo3-distribution](https://github.com/helhum/minimal-typo3-distribution)
+
+````
+composer create-project helhum/minimal-typo3-distribution my-typo3-project ^8
+cd my-typo3-project
+./vendor/bin/typo3cms install:setup
+````
+The last command is interactive and will ask for your DB credentials. Select "site" or "no" as setup type.
+
+````
+composer require smichaelsen/typo3-gitlab-ci dev-master && vendor/smichaelsen/typo3-gitlab-ci/scripts/install.sh
+php -S 127.0.0.1:8080 -t web/
+````
+
 # GitLab variables
 
 Set the following variables in your GitLab project to get a working deployment.
