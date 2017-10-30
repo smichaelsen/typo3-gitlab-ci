@@ -5,6 +5,7 @@ echo $'DBNAME='"$(./vendor/bin/typo3cms configuration:showactive --json --path D
 echo $'DBPASS='"$(./vendor/bin/typo3cms configuration:showactive --json --path DB/Connections/Default/password)"$'' >> .env
 echo $'DBUSER='"$(./vendor/bin/typo3cms configuration:showactive --json --path DB/Connections/Default/user)"$'' >> .env
 echo $'DBHOST='"$(./vendor/bin/typo3cms configuration:showactive --json --path DB/Connections/Default/host)"$'' >> .env
+echo $'ENVNAME="local"' >> .env
 if [ ! -f web/typo3conf/AdditionalConfiguration.php ]; then
     cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php web/typo3conf/
 fi
