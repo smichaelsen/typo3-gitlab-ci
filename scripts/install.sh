@@ -1,13 +1,10 @@
 #!/bin/bash
 [ -d gitlab-ci-scripts ] || mkdir gitlab-ci-scripts
-touch .env
-echo $'DBNAME='"$(./vendor/bin/typo3cms configuration:showactive --json --path DB/Connections/Default/dbname)"$'' >> .env
-echo $'DBPASS='"$(./vendor/bin/typo3cms configuration:showactive --json --path DB/Connections/Default/password)"$'' >> .env
-echo $'DBUSER='"$(./vendor/bin/typo3cms configuration:showactive --json --path DB/Connections/Default/user)"$'' >> .env
-echo $'DBHOST='"$(./vendor/bin/typo3cms configuration:showactive --json --path DB/Connections/Default/host)"$'' >> .env
-echo $'ENVNAME="local"' >> .env
 if [ ! -f web/typo3conf/AdditionalConfiguration.php ]; then
     cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php web/typo3conf/
+fi
+if [ ! -f .env ]; then
+    cp vendor/smichaelsen/typo3-gitlab-ci/src/.env-example .env
 fi
 cp vendor/smichaelsen/typo3-gitlab-ci/src/.gitlab-ci.yml.dist .gitlab-ci.yml
 cp vendor/smichaelsen/typo3-gitlab-ci/scripts/after-composer.sh gitlab-ci-scripts/_after-composer.sh
