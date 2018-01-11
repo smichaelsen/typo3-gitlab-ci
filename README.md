@@ -127,6 +127,10 @@ the package with `^4.0.0`. Then you can expect receiving bugfix releases and imp
 
 ### Breaking Changes:
 
+#### 4.x to 5.x:
+
+* last commit: TYPO3 is now required in version 8.7
+
 #### 3.x to 4.x:
 
 * [88a6e934](https://github.com/smichaelsen/typo3-gitlab-ci/commit/88a6e934d5256e0a76247734266abd42c5c3dabc): PHP is now required in version 7.0
