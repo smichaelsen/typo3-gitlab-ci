@@ -76,7 +76,7 @@ prepare_typo3:
     - echo $'ENCRYPTION_KEY=\''"${!ENCRYPTION_KEY_VARIABLE-`echo $ENCRYPTION_KEY`}"$'\'' >> .Build/.env
     - INSTALL_TOOL_PASSWORD_VARIABLE=$BRANCH'_INSTALL_TOOL_PASSWORD'
     - echo $'INSTALL_TOOL_PASSWORD=\''"${!INSTALL_TOOL_PASSWORD_VARIABLE-`echo $INSTALL_TOOL_PASSWORD`}"$'\'' >> .Build/.env
-    - php .Build/vendor/helhum/typo3-console/Scripts/typo3cms install:generatepackagestates
+    - php .Build/vendor/bin/typo3cms install:generatepackagestates
   dependencies:
     - composer
   artifacts:
@@ -134,7 +134,7 @@ deploy:
 
     - PHP_BINARY_VARIABLE=$BRANCH'_PHP_BINARY'
     - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
-    - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'vendor/helhum/typo3-console/Scripts/typo3cms'
+    - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'vendor/bin/typo3cms'
     - >
         ssh $SSH_USERNAME@$SSH_HOST
         $TYPO3_CONSOLE' install:fixfolderstructure &&
