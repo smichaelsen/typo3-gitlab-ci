@@ -20,7 +20,7 @@ Include the following configuration in your root composer.json:
         },
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": "web"
+            "web-dir": "public"
         }
     },
     "scripts": {
@@ -53,7 +53,7 @@ The last command is interactive and will ask for your DB credentials. Select "si
 
 ````
 composer require smichaelsen/typo3-gitlab-ci dev-master && vendor/smichaelsen/typo3-gitlab-ci/scripts/install.sh
-php -S 127.0.0.1:8080 -t web/
+php -S 127.0.0.1:8080 -t public/
 ````
 
 # GitLab variables

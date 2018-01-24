@@ -1,11 +1,11 @@
 #!/bin/bash
+if [ ! -f private/typo3conf/AdditionalConfiguration.php ]; then
+    cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php private/typo3conf/
+fi
+if ! grep -q "ENVNAME" .env; then
+    cat vendor/smichaelsen/typo3-gitlab-ci/src/.env-example >> .env
+fi
 [ -d gitlab-ci-scripts ] || mkdir gitlab-ci-scripts
-if [ ! -f web/typo3conf/AdditionalConfiguration.php ]; then
-    cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php web/typo3conf/
-fi
-if [ ! -f .env ]; then
-    cp vendor/smichaelsen/typo3-gitlab-ci/src/.env-example .env
-fi
 cp vendor/smichaelsen/typo3-gitlab-ci/src/.gitlab-ci.yml.dist .gitlab-ci.yml
 cp vendor/smichaelsen/typo3-gitlab-ci/scripts/after-composer.sh gitlab-ci-scripts/_after-composer.sh
 cp vendor/smichaelsen/typo3-gitlab-ci/scripts/build-extensions.sh gitlab-ci-scripts/_build-extensions.sh
