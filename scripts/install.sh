@@ -2,6 +2,9 @@
 if [ ! -f private/typo3conf/AdditionalConfiguration.php ]; then
     cp vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php private/typo3conf/
 fi
+if ! grep -q "trustedHostsPattern" private/typo3conf/AdditionalConfiguration.php; then
+    echo "\$GLOBALS['TYPO3_CONF_VARS']['SYS']['trustedHostsPattern'] = '.*';" >> private/typo3conf/AdditionalConfiguration.php
+fi
 if ! grep -q "ENVNAME" .env; then
     cat vendor/smichaelsen/typo3-gitlab-ci/src/.env-example >> .env
 fi
