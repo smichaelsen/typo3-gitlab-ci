@@ -52,7 +52,7 @@ cd my-typo3-project
 The last command is interactive and will ask for your DB credentials. Select "site" or "no" as setup type.
 
 ````
-composer require smichaelsen/typo3-gitlab-ci dev-master && vendor/smichaelsen/typo3-gitlab-ci/scripts/install.sh
+composer require smichaelsen/typo3-gitlab-ci:dev-task/public-folder && vendor/smichaelsen/typo3-gitlab-ci/scripts/install.sh
 php -S 127.0.0.1:8080 -t public/
 ````
 
