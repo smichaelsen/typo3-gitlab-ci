@@ -19,7 +19,6 @@ composer:
     - export COMPOSER_NO_INTERACTION=1
   script:
     - ./composer.phar install --no-dev --prefer-dist --optimize-autoloader
-    - rm -f public/index.php
     - touch gitlab-ci-scripts/rsync-build-excludes.txt
     - >
       rsync -a ./ .Build/
@@ -57,7 +56,6 @@ prepare_typo3:
   image: webdevops/php:ubuntu-16.04
   script:
     - BRANCH=$CI_BUILD_REF_NAME
-    - cp .Build/vendor/typo3/cms/index.php .Build/public/index.php
     - cp .Build/vendor/smichaelsen/typo3-gitlab-ci/src/AdditionalConfiguration.php .Build/private/typo3conf/
     - if [ -f .Build/public/.htaccess.$BRANCH ]; then cp .Build/public/.htaccess.$BRANCH .Build/public/.htaccess ; fi
     - echo $'ENVNAME=\''$BRANCH$'\'' >> .Build/.env
@@ -84,7 +82,6 @@ prepare_typo3:
     paths:
       - .Build/.env
       - .Build/public/.htaccess
-      - .Build/public/index.php
       - .Build/private/typo3conf/AdditionalConfiguration.php
       - .Build/private/typo3conf/PackageStates.php
 
@@ -121,8 +118,8 @@ deploy:
       --exclude=/backups
       --exclude=/gitlab-ci-scripts
       --exclude=/public/.htaccess.*
-      --exclude=/public/fileadmin
       --exclude=/public/uploads
+      --exclude=/private/fileadmin
       --exclude=/private/typo3conf/l10n
       --exclude=/private/typo3temp
       --exclude=.git
