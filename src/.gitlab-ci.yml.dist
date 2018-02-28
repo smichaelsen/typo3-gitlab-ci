@@ -106,6 +106,9 @@ deploy:
     - SSH_HOST_VARIABLE=$BRANCH'_SSH_HOST'
     - SSH_HOST="${!SSH_HOST_VARIABLE-`echo $SSH_HOST`}"
     - if [ -z "$SSH_HOST" ]; then echo $BRANCH' is not deployed because there is no SSH_HOST variable configured.' && exit 0; fi
+    - SSH_PORT_VARIABLE=$BRANCH'_SSH_PORT'
+    - SSH_PORT="${!SSH_PORT_VARIABLE-`echo $SSH_PORT`}"
+    - SSH_PORT="${SSH_PORT:-22}"
     - SSH_USERNAME_VARIABLE=$BRANCH'_SSH_USERNAME'
     - SSH_USERNAME="${!SSH_USERNAME_VARIABLE-`echo $SSH_USERNAME`}"
 
@@ -117,7 +120,7 @@ deploy:
 
     - mkdir -p gitlab-ci-scripts && touch gitlab-ci-scripts/rsync-deploy-excludes.txt
     - >
-      rsync -az -e "ssh" --delete
+      rsync -az -e "ssh -p $SSH_PORT" --delete
       --exclude=/backups
       --exclude=/gitlab-ci-scripts
       --exclude=/web/.htaccess.*
@@ -136,7 +139,7 @@ deploy:
     - PHP_BINARY="${!PHP_BINARY_VARIABLE-`echo $PHP_BINARY`}"
     - TYPO3_CONSOLE=$PHP_BINARY' '$SSH_REMOTE_PATH'vendor/bin/typo3cms'
     - >
-        ssh $SSH_USERNAME@$SSH_HOST
+        ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST
         $TYPO3_CONSOLE' install:fixfolderstructure &&
         mkdir -p '$SSH_REMOTE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz &&
         '$TYPO3_CONSOLE' database:updateschema "safe" &&
