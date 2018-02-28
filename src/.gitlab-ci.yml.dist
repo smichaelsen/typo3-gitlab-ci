@@ -143,4 +143,4 @@ deploy:
         '$TYPO3_CONSOLE' extension:setupactive &&
         '$TYPO3_CONSOLE' upgrade:all &&
         '$TYPO3_CONSOLE' database:updateschema "destructive" &&
-        '$TYPO3_CONSOLE' cache:flush --force
+        '$TYPO3_CONSOLE' cache:flush --force'
