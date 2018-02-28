@@ -19,7 +19,7 @@ composer:
     - export COMPOSER_NO_INTERACTION=1
   script:
     - ./composer.phar install --no-dev --prefer-dist --optimize-autoloader
-    - touch gitlab-ci-scripts/rsync-build-excludes.txt
+    - mkdir -p gitlab-ci-scripts && touch gitlab-ci-scripts/rsync-build-excludes.txt
     - >
       rsync -a ./ .Build/
       --exclude=/.Build
@@ -112,7 +112,7 @@ deploy:
 
     - if [ -f ./gitlab-ci-scripts/pre-deploy.sh ]; then cd .Build && ../gitlab-ci-scripts/pre-deploy.sh && cd -; fi
 
-    - touch gitlab-ci-scripts/rsync-deploy-excludes.txt
+    - mkdir -p gitlab-ci-scripts && touch gitlab-ci-scripts/rsync-deploy-excludes.txt
     - >
       rsync -az -e "ssh" --delete
       --exclude=/backups
