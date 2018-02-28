@@ -65,6 +65,7 @@ Set the following variables in your GitLab project to get a working deployment.
 | `SSH_PRIVATE_KEY`       | :x:                                | Private SSH key :sparkles:                                                      | :white_check_mark: |
 | `SSH_USERNAME`          | :white_check_mark:                 | User name for SSH connection                                                    | :white_check_mark: |
 | `SSH_HOST`              | :white_check_mark:                 | Hostname (IP or domain) of target server.                                       | :white_check_mark: |
+| `SSH_PORT`              | :white_check_mark:                 | Post for the ssh connection. Defaults to 22.                                    | :x:                |
 | `SSH_REMOTE_PATH`       | :white_check_mark:                 | Path where on the target server the project should be deployed.                 | :white_check_mark: |
 | `DBHOST`                | :white_check_mark:                 | Database host                                                                   | :white_check_mark: |
 | `DBNAME`                | :white_check_mark:                 | Database name                                                                   | :white_check_mark: |
