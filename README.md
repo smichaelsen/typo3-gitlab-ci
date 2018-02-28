@@ -108,7 +108,7 @@ to do last minute preparations on the target server.
 Hint: In your own scripts you have all your Gitlab CI variables available. So you can perform commands on the target
 server like this:
 
-    ssh $SSH_USERNAME@$SSH_HOST "echo 'Hello from the target server!'"
+    ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "echo 'Hello from the target server!'"
     
 ### `rsync-build-excludes.txt`
 
