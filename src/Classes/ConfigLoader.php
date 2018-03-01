@@ -23,7 +23,7 @@ class ConfigLoader
 
         $dbname = getenv('DBNAME');
         if (!empty($dbname)) {
-            $defaultDbConfig['database'] = $dbname;
+            $defaultDbConfig['dbname'] = $dbname;
         }
 
         $dbhost = getenv('DBHOST');
@@ -38,7 +38,7 @@ class ConfigLoader
 
         $dbuser = getenv('DBUSER');
         if (!empty($dbuser)) {
-            $defaultDbConfig['username'] = $dbuser;
+            $defaultDbConfig['user'] = $dbuser;
         }
 
         $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections'] = array_replace_recursive(
