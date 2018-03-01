@@ -1,29 +1,29 @@
 {
     "name": "smichaelsen/typo3-gitlab-ci",
-	"require": {
-		"php": ">=7.0 <7.2",
-		"typo3/cms": "^8.7",
-		"helhum/dotenv-connector": "^2.0.1",
-		"helhum/typo3-console": "^5.0.3"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^6.2.3",
-		"guzzlehttp/guzzle": "^6.3.0"
-	},
-	"autoload": {
-		"psr-4": {
-			"Smichaelsen\\Typo3GitlabCi\\": "src/Classes/"
-		}
-	},
-	"extra": {
-		"branch-alias": {
-			"dev-master": "4.x-dev"
-		},
-		"typo3/cms": {
-			"cms-package-dir": "{$vendor-dir}/typo3/cms"
-		},
-		"helhum/typo3-console": {
-			"install-extension-dummy": false
-		}
-	}
+    "require": {
+        "php": ">=7.2 <7.3",
+        "typo3/minimal": "^9.3",
+        "helhum/dotenv-connector": "^2.0.1",
+        "helhum/typo3-console": "^5.0.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2.3",
+        "guzzlehttp/guzzle": "^6.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Smichaelsen\\Typo3GitlabCi\\": "src/Classes/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.x-dev"
+        },
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms"
+        },
+        "helhum/typo3-console": {
+            "install-extension-dummy": false
+        }
+    }
 }
