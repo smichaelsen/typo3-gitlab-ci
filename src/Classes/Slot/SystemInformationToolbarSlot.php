@@ -17,11 +17,6 @@ class SystemInformationToolbarSlot
         $gitReference = getenv('GIT_REFERENCE');
         $iconIdentifier = 'sysinfo-git';
 
-        if ((int) TYPO3_branch[0] === 7) {
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-            $iconIdentifier = $iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL)->render();
-        }
-
         if (!empty($gitReference)) {
             $systemInformationToolbarItem->addSystemInformation(
                 'Git reference',

@@ -19,28 +19,19 @@ class ConfigLoader
 
     protected function loadDatabaseCredentials()
     {
-        if ((int) TYPO3_branch[0] === 7) {
-            $dbConfig = [
-                'database' => getenv('DBNAME'),
-                'password' => getenv('DBPASS'),
-                'username' => getenv('DBUSER'),
-                'host' => getenv('DBHOST'),
-            ];
-        } else {
-            $dbConfig = [
-                'Connections' => [
-                    'Default' => [
-                        'charset' => 'utf8',
-                        'dbname' => getenv('DBNAME'),
-                        'driver' => 'mysqli',
-                        'host' => getenv('DBHOST'),
-                        'password' => getenv('DBPASS'),
-                        'port' => '3306',
-                        'user' => getenv('DBUSER'),
-                    ],
+        $dbConfig = [
+            'Connections' => [
+                'Default' => [
+                    'charset' => 'utf8',
+                    'dbname' => getenv('DBNAME'),
+                    'driver' => 'mysqli',
+                    'host' => getenv('DBHOST'),
+                    'password' => getenv('DBPASS'),
+                    'port' => '3306',
+                    'user' => getenv('DBUSER'),
                 ],
-            ];
-        }
+            ],
+        ];
         $GLOBALS['TYPO3_CONF_VARS'] = array_replace_recursive(
             $GLOBALS['TYPO3_CONF_VARS'],
             ['DB' => $dbConfig]
