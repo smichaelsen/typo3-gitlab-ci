@@ -139,7 +139,6 @@ deploy:
         ssh -p $SSH_PORT $SSH_USERNAME@$SSH_HOST
         $TYPO3_CONSOLE' install:fixfolderstructure &&
         mkdir -p '$SSH_REMOTE_PATH'/backups/databases && '$TYPO3_CONSOLE' database:export | gzip > '$SSH_REMOTE_PATH'/backups/databases/beforedeploy.gz &&
-        '$TYPO3_CONSOLE' database:updateschema "safe" &&
         '$TYPO3_CONSOLE' extension:setupactive &&
         '$TYPO3_CONSOLE' upgrade:all &&
         '$TYPO3_CONSOLE' database:updateschema "destructive" &&
